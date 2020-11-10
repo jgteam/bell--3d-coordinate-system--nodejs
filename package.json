@@ -1,0 +1,23 @@
+{
+  "name": "bell--3d-coordinate-system--nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgteam/bell--3d-coordinate-system--nodejs.git"
+  },
+  "author": "Jannis Guensche",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jgteam/bell--3d-coordinate-system--nodejs/issues"
+  },
+  "homepage": "https://github.com/jgteam/bell--3d-coordinate-system--nodejs#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6"
+  }
+}
