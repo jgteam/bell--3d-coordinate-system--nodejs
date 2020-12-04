@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jgteam/bell--3d-coordinate-system--nodejs#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "socket.io": "^3.0.1"
   }
 }

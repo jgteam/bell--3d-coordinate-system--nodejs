@@ -1,0 +1,191 @@
+#toolbox {
+
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+
+  bottom: 30px;
+  width: 100%;
+
+  .button-wrapper {
+
+    margin: 0 auto;
+
+    .tooltips {
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .tooltip {
+
+        opacity: .3;
+        font-size: 16px;
+        margin-bottom: 12px;
+
+        &#object-tooltip {
+
+          font-size: 24px;
+
+          b {
+
+            font-weight: 700;
+
+          }
+
+        }
+
+        &#button-tooltip {
+
+          font-weight: 700;
+
+        }
+
+        &.active {
+
+          opacity: 1;
+
+        }
+
+      }
+
+    }
+
+    .buttons {
+
+      display: flex;
+      align-items: center;
+
+      button {
+
+        &#button-createPoint {
+          background-image: url('../assets/toolbox/icon-createpoint.svg');
+        }
+        &#button-createPointConnection {
+          background-image: url('../assets/toolbox/icon-createpointconnection.svg');
+        }
+        &#button-createPlane {
+          background-image: url('../assets/toolbox/icon-createplane.svg');
+        }
+        &#button-modeMove {
+          background-image: url('../assets/toolbox/icon-move.svg');
+        }
+        &#button-modeSelectPoint {
+          background-image: url('../assets/toolbox/icon-selectpoint.svg');
+        }
+        &#button-modeSelectPointConnection {
+          background-image: url('../assets/toolbox/icon-selectpointconnection.svg');
+        }
+        &#button-toggleCustomnameSize {
+          background-image: url('../assets/toolbox/icon-togglenametagsizes.svg');
+        }
+        &#button-resetCamera {
+          background-image: url('../assets/toolbox/icon-resetcamera.svg');
+        }
+        &#button-selectCameraTarget {
+          background-image: url('../assets/toolbox/icon-selectcameratarget.svg');
+        }
+        &#button-resetCameraTarget {
+          background-image: url('../assets/toolbox/icon-resetcameratarget.svg');
+        }
+
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 50px;
+
+        width: 80px;
+        height: 80px;
+
+        border-radius: 8px;
+        margin: 0 10px;
+
+      }
+
+    }
+
+    .divider {
+
+      width: 2px;
+      height: 50px;
+
+      border-radius: 2px;
+      margin: 0 24px;
+
+      background-color: rgba(0, 0, 0, 0.3);
+
+    }
+
+  }
+
+  &.createPlane #button-createPlane {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.createPointConnection #button-createPointConnection {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.createPoint #button-createPoint {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.move #button-modeMove {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.selectPoint #button-modeSelectPoint {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.selectPointConnection #button-modeSelectPointConnection {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.selectCameraTarget #button-selectCameraTarget {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+}
+
+.importexport-wrapper {
+
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+
+  height: 200px;
+
+  #import, #download, #button-deleteAll {
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 25px;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 4px;
+    margin: 0;
+
+  }
+
+  #import {
+
+    background-image: url('../assets/toolbox/icon-import.svg');
+    padding-left: 40px;
+    margin-bottom: 14px;
+
+  }
+
+  #download {
+
+    background-image: url('../assets/toolbox/icon-export.svg');
+    margin-bottom: 14px;
+
+  }
+
+  #button-deleteAll {
+
+    background-image: url('../assets/toolbox/icon-deleteall.svg');
+
+  }
+
+}

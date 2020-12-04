@@ -1,0 +1,75 @@
+#toolbox.createPoint {
+
+  #createpoint-dialogbox {
+
+    display: flex;
+
+  }
+
+}
+
+#createpoint-dialogbox {
+
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  width: 948px;
+  margin: 0 auto 36px;
+
+  label {
+
+    cursor: pointer;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+    margin: 0 24px;
+
+    text-transform: uppercase;
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 700;
+    color: rgba(41, 41, 41, 0.8);
+
+
+    input, select, option {
+
+      text-transform: uppercase;
+      width: 130px;
+      background-color: rgba(255, 255, 255, 0.5);;
+      color: rgb(41, 41, 41);
+
+      border-radius: 4px;
+
+      border: none;
+      font-size: 36px;
+      line-height: 36px;
+      font-weight: 700;
+
+      text-align: left;
+
+      padding: 0 12px;
+      margin-left: 12px;
+
+    }
+
+  }
+
+  button#button-submitCreatePointDialogBox {
+
+    background-image: url('../assets/toolbox/icon-submitcreatepointdialog.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50px;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 8px;
+
+  }
+
+}

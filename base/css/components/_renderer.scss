@@ -1,0 +1,253 @@
+#renderer {
+
+  z-index: -2;
+  cursor: move;
+
+
+
+
+  > div {
+
+    > div {
+
+      pointer-events: none !important;
+
+      &.object {
+
+        &.point {
+
+          &[customname] {
+
+            &::after {
+
+              content: attr(customname);
+
+              display: block;
+              position: absolute;
+              white-space: nowrap;
+              font-size: 4px;
+              font-weight: 700;
+              color: white;
+              background-color: rgba(0, 0, 0, 0.5);
+              bottom: 150%;
+              left: 50%;
+              transform: translate(-50%);
+              padding: 0 2.2px;
+              border-radius: 1.4px;
+              text-align: center;
+              //line-height: 5px;
+              //height: 5px;
+
+            }
+
+            &.smaller {
+              &::after {
+                transform: translate(-50%, 30%) scale(.5);
+              }
+            }
+            &.hidden {
+              &::after {
+                display: none;
+              }
+            }
+
+          }
+
+          &.selected {
+
+            height: 4px !important;
+            width: 4px !important;
+            &::before {
+
+              content: "";
+              border-radius: 100px;
+
+              background-color: inherit;
+              display: block;
+              position: relative;
+
+              width: 54px;
+              height: 54px;
+              top: -25px;
+              left: -25px;
+              opacity: 1;
+              transform: scale(0.05);
+
+              pointer-events: none !important;
+
+              animation: selectedDotPulse 5s infinite ease-out;
+
+              @keyframes selectedDotPulse {
+                from {
+                  transform: scale(0.05);
+                  opacity: 1;
+                }
+
+                to {
+                  transform: scale(0.25);
+                  opacity: 0;
+                }
+              }
+
+            }
+
+          }
+
+        }
+
+        &.pointConnection {
+
+          &.selected {
+
+            height: 2px !important;
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  .xy-plane, .xz-plane, .yz-plane {
+
+    background-image: url('../assets/grid/gridtile.svg');
+    background-size: 15px;
+
+  }
+
+  .xy-plane-x-axle, .xy-plane-y-axle, .xz-plane-x-axle, .xz-plane-z-axle, .yz-plane-y-axle, .yz-plane-z-axle {
+
+    height: 16px;
+    opacity: 1;
+    background-image: url('../assets/grid/gridaxleline.svg');
+    background-size: 8px;
+    background-position: center;
+    background-repeat-y: no-repeat;
+
+  }
+
+  .x-axle-end, .y-axle-end, .z-axle-end, .z-axle-end-2nd-perspective {
+
+    width: 16px;
+    height: 16px;
+
+    background-image: url('../assets/grid/gridaxlearrow.svg');
+    background-size: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+
+  }
+
+  .axle-end-text {
+
+    width: 12px;
+    height: 12px;
+    text-transform: uppercase;
+    font-size: 8px;
+    line-height: 12px;
+    border-radius: 12px;
+
+    font-weight: 700;
+    text-align: center;
+
+    background-color: rgba(0, 0, 0, 0.025);
+
+  }
+
+  &.move {
+
+    > div {
+
+      > div {
+
+        pointer-events: none !important;
+
+      }
+
+    }
+
+  }
+
+  &.selectPoint {
+
+    > div {
+
+      > div {
+
+        &.object {
+
+          &.point {
+
+            pointer-events: auto !important;
+            cursor: pointer;
+
+            &.selected {
+
+              pointer-events: none !important;
+
+            }
+
+          }
+
+          &:not(.point) {
+
+            opacity: .1 !important;
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  &.selectPointConnection {
+
+    > div {
+
+      > div {
+
+        &.object {
+
+          &.pointConnection {
+
+            pointer-events: auto !important;
+            cursor: pointer;
+
+          }
+
+          &:not(.pointConnection) {
+
+            opacity: .1 !important;
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+#renderer_webGL {
+
+  z-index: -3;
+  position: absolute;
+  pointer-events: none !important;
+  opacity: .4;
+
+  &.selectPoint, &.selectPointConnection {
+
+    opacity: .1;
+
+  }
+
+}

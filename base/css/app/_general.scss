@@ -1,0 +1,60 @@
+* {
+
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Roboto', sans-serif;
+  color: rgb(41, 41, 41);
+
+  box-sizing: border-box;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+}
+
+.gui-container {
+
+  .wrapper {
+
+    padding: 24px;
+    border-radius: 12px;
+
+    background-color: transparent;
+    backdrop-filter: blur(15px) contrast(85%);
+    -webkit-backdrop-filter: blur(15px) contrast(85%);
+
+  }
+
+  .gui-button {
+
+    border: none;
+
+    cursor: pointer;
+    background-color: transparent;
+
+    &:hover, &:focus {
+      background-color: rgba(0, 0, 0, 0.1);
+      outline: none;
+    }
+
+    &.selected {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+  }
+
+}
+
+#hidden_export_link {
+
+  pointer-events: none;
+  font-size: 0;
+  color: transparent;
+  display: none;
+  visibility: hidden;
+
+}

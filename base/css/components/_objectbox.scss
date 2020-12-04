@@ -1,0 +1,144 @@
+#objectbox {
+
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  bottom: 30px;
+  left: 30px;
+
+  .object-wrapper {
+
+    min-height: 200px;
+    max-height: calc(100vh - 116px);
+    width: 240px;
+    overflow-y: auto;
+
+    .object {
+
+      > div.buttons {
+
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+      }
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 4px 12px;
+      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: 700;
+
+      &:hover, &:focus {
+
+        .deleteElementButton, {
+
+          visibility: visible;
+
+        }
+
+        &[linked_object_type="point"] {
+
+          .setNameButton {
+
+            visibility: visible;
+            pointer-events: auto;
+
+          }
+
+        }
+
+      }
+
+
+      .deleteElementButton {
+
+        visibility: hidden;
+
+        height: 19px;
+        width: 19px;
+
+        background-image: url('../assets/toolbox/icon-delete.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 19px;
+
+        cursor: pointer;
+
+        &:hover, &:focus {
+
+          background-color: rgba(255, 0, 0, 0.4);
+
+        }
+
+      }
+
+      .setNameButton {
+
+        visibility: hidden;
+        pointer-events: none;
+
+        height: 19px;
+        width: 19px;
+
+        background-image: url('../assets/toolbox/icon-name.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 19px;
+
+        cursor: pointer;
+
+        &:hover, &:focus {
+
+          background-color: rgb(209, 255, 159);
+
+        }
+
+      }
+
+    }
+
+  }
+
+  #button-toggleObjectBoxSize {
+
+    height: 42px;
+    width: 42px;
+    border-radius: 42px;
+
+    transform: rotate(180deg);
+
+    background-image: url('../assets/toolbox/icon-sizetoggle.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 42px;
+
+    margin-bottom: 12px;
+
+  }
+
+  &.small {
+
+    transform: none;
+
+    #button-toggleObjectBoxSize {
+
+      transform: rotate(0deg);
+
+    }
+
+    .object-wrapper {
+
+      max-height: 200px;
+
+    }
+
+  }
+
+}

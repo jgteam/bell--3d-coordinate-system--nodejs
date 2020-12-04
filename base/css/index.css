@@ -1,0 +1,379 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  color: #292929;
+  box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.gui-container .wrapper {
+  padding: 24px;
+  border-radius: 12px;
+  background-color: transparent;
+  backdrop-filter: blur(15px) contrast(85%);
+  -webkit-backdrop-filter: blur(15px) contrast(85%); }
+.gui-container .gui-button {
+  border: none;
+  cursor: pointer;
+  background-color: transparent; }
+  .gui-container .gui-button:hover, .gui-container .gui-button:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+    outline: none; }
+  .gui-container .gui-button.selected {
+    background-color: rgba(0, 0, 0, 0.2); }
+
+#hidden_export_link {
+  pointer-events: none;
+  font-size: 0;
+  color: transparent;
+  display: none;
+  visibility: hidden; }
+
+#renderer {
+  z-index: -2;
+  cursor: move; }
+  #renderer > div > div {
+    pointer-events: none !important; }
+    #renderer > div > div.object.point[customname]::after {
+      content: attr(customname);
+      display: block;
+      position: absolute;
+      white-space: nowrap;
+      font-size: 4px;
+      font-weight: 700;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      bottom: 150%;
+      left: 50%;
+      transform: translate(-50%);
+      padding: 0 2.2px;
+      border-radius: 1.4px;
+      text-align: center; }
+    #renderer > div > div.object.point[customname].smaller::after {
+      transform: translate(-50%, 30%) scale(0.5); }
+    #renderer > div > div.object.point[customname].hidden::after {
+      display: none; }
+    #renderer > div > div.object.point.selected {
+      height: 4px !important;
+      width: 4px !important; }
+      #renderer > div > div.object.point.selected::before {
+        content: "";
+        border-radius: 100px;
+        background-color: inherit;
+        display: block;
+        position: relative;
+        width: 54px;
+        height: 54px;
+        top: -25px;
+        left: -25px;
+        opacity: 1;
+        transform: scale(0.05);
+        pointer-events: none !important;
+        animation: selectedDotPulse 5s infinite ease-out; }
+@keyframes selectedDotPulse {
+  from {
+    transform: scale(0.05);
+    opacity: 1; }
+  to {
+    transform: scale(0.25);
+    opacity: 0; } }
+    #renderer > div > div.object.pointConnection.selected {
+      height: 2px !important; }
+  #renderer .xy-plane, #renderer .xz-plane, #renderer .yz-plane {
+    background-image: url("../assets/grid/gridtile.svg");
+    background-size: 15px; }
+  #renderer .xy-plane-x-axle, #renderer .xy-plane-y-axle, #renderer .xz-plane-x-axle, #renderer .xz-plane-z-axle, #renderer .yz-plane-y-axle, #renderer .yz-plane-z-axle {
+    height: 16px;
+    opacity: 1;
+    background-image: url("../assets/grid/gridaxleline.svg");
+    background-size: 8px;
+    background-position: center;
+    background-repeat-y: no-repeat; }
+  #renderer .x-axle-end, #renderer .y-axle-end, #renderer .z-axle-end, #renderer .z-axle-end-2nd-perspective {
+    width: 16px;
+    height: 16px;
+    background-image: url("../assets/grid/gridaxlearrow.svg");
+    background-size: 16px;
+    background-position: center;
+    background-repeat: no-repeat; }
+  #renderer .axle-end-text {
+    width: 12px;
+    height: 12px;
+    text-transform: uppercase;
+    font-size: 8px;
+    line-height: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.025); }
+  #renderer.move > div > div {
+    pointer-events: none !important; }
+  #renderer.selectPoint > div > div.object.point {
+    pointer-events: auto !important;
+    cursor: pointer; }
+    #renderer.selectPoint > div > div.object.point.selected {
+      pointer-events: none !important; }
+  #renderer.selectPoint > div > div.object:not(.point) {
+    opacity: .1 !important; }
+  #renderer.selectPointConnection > div > div.object.pointConnection {
+    pointer-events: auto !important;
+    cursor: pointer; }
+  #renderer.selectPointConnection > div > div.object:not(.pointConnection) {
+    opacity: .1 !important; }
+
+#renderer_webGL {
+  z-index: -3;
+  position: absolute;
+  pointer-events: none !important;
+  opacity: .4; }
+  #renderer_webGL.selectPoint, #renderer_webGL.selectPointConnection {
+    opacity: .1; }
+
+#toolbox {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  bottom: 30px;
+  width: 100%; }
+  #toolbox .button-wrapper {
+    margin: 0 auto; }
+    #toolbox .button-wrapper .tooltips {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
+      #toolbox .button-wrapper .tooltips .tooltip {
+        opacity: .3;
+        font-size: 16px;
+        margin-bottom: 12px; }
+        #toolbox .button-wrapper .tooltips .tooltip#object-tooltip {
+          font-size: 24px; }
+          #toolbox .button-wrapper .tooltips .tooltip#object-tooltip b {
+            font-weight: 700; }
+        #toolbox .button-wrapper .tooltips .tooltip#button-tooltip {
+          font-weight: 700; }
+        #toolbox .button-wrapper .tooltips .tooltip.active {
+          opacity: 1; }
+    #toolbox .button-wrapper .buttons {
+      display: flex;
+      align-items: center; }
+      #toolbox .button-wrapper .buttons button {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 50px;
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        margin: 0 10px; }
+        #toolbox .button-wrapper .buttons button#button-createPoint {
+          background-image: url("../assets/toolbox/icon-createpoint.svg"); }
+        #toolbox .button-wrapper .buttons button#button-createPointConnection {
+          background-image: url("../assets/toolbox/icon-createpointconnection.svg"); }
+        #toolbox .button-wrapper .buttons button#button-createPlane {
+          background-image: url("../assets/toolbox/icon-createplane.svg"); }
+        #toolbox .button-wrapper .buttons button#button-modeMove {
+          background-image: url("../assets/toolbox/icon-move.svg"); }
+        #toolbox .button-wrapper .buttons button#button-modeSelectPoint {
+          background-image: url("../assets/toolbox/icon-selectpoint.svg"); }
+        #toolbox .button-wrapper .buttons button#button-modeSelectPointConnection {
+          background-image: url("../assets/toolbox/icon-selectpointconnection.svg"); }
+        #toolbox .button-wrapper .buttons button#button-toggleCustomnameSize {
+          background-image: url("../assets/toolbox/icon-togglenametagsizes.svg"); }
+        #toolbox .button-wrapper .buttons button#button-resetCamera {
+          background-image: url("../assets/toolbox/icon-resetcamera.svg"); }
+        #toolbox .button-wrapper .buttons button#button-selectCameraTarget {
+          background-image: url("../assets/toolbox/icon-selectcameratarget.svg"); }
+        #toolbox .button-wrapper .buttons button#button-resetCameraTarget {
+          background-image: url("../assets/toolbox/icon-resetcameratarget.svg"); }
+    #toolbox .button-wrapper .divider {
+      width: 2px;
+      height: 50px;
+      border-radius: 2px;
+      margin: 0 24px;
+      background-color: rgba(0, 0, 0, 0.3); }
+  #toolbox.createPlane #button-createPlane {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.createPointConnection #button-createPointConnection {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.createPoint #button-createPoint {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.move #button-modeMove {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.selectPoint #button-modeSelectPoint {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.selectPointConnection #button-modeSelectPointConnection {
+    background-color: rgba(0, 0, 0, 0.2); }
+  #toolbox.selectCameraTarget #button-selectCameraTarget {
+    background-color: rgba(0, 0, 0, 0.2); }
+
+.importexport-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  height: 200px; }
+  .importexport-wrapper #import, .importexport-wrapper #download, .importexport-wrapper #button-deleteAll {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 25px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    margin: 0; }
+  .importexport-wrapper #import {
+    background-image: url("../assets/toolbox/icon-import.svg");
+    padding-left: 40px;
+    margin-bottom: 14px; }
+  .importexport-wrapper #download {
+    background-image: url("../assets/toolbox/icon-export.svg");
+    margin-bottom: 14px; }
+  .importexport-wrapper #button-deleteAll {
+    background-image: url("../assets/toolbox/icon-deleteall.svg"); }
+
+#objectbox {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  bottom: 30px;
+  left: 30px; }
+  #objectbox .object-wrapper {
+    min-height: 200px;
+    max-height: calc(100vh - 116px);
+    width: 240px;
+    overflow-y: auto; }
+    #objectbox .object-wrapper .object {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 12px;
+      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: 700; }
+      #objectbox .object-wrapper .object > div.buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center; }
+      #objectbox .object-wrapper .object:hover .deleteElementButton, #objectbox .object-wrapper .object:focus .deleteElementButton {
+        visibility: visible; }
+      #objectbox .object-wrapper .object:hover[linked_object_type="point"] .setNameButton, #objectbox .object-wrapper .object:focus[linked_object_type="point"] .setNameButton {
+        visibility: visible;
+        pointer-events: auto; }
+      #objectbox .object-wrapper .object .deleteElementButton {
+        visibility: hidden;
+        height: 19px;
+        width: 19px;
+        background-image: url("../assets/toolbox/icon-delete.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 19px;
+        cursor: pointer; }
+        #objectbox .object-wrapper .object .deleteElementButton:hover, #objectbox .object-wrapper .object .deleteElementButton:focus {
+          background-color: rgba(255, 0, 0, 0.4); }
+      #objectbox .object-wrapper .object .setNameButton {
+        visibility: hidden;
+        pointer-events: none;
+        height: 19px;
+        width: 19px;
+        background-image: url("../assets/toolbox/icon-name.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 19px;
+        cursor: pointer; }
+        #objectbox .object-wrapper .object .setNameButton:hover, #objectbox .object-wrapper .object .setNameButton:focus {
+          background-color: #d1ff9f; }
+  #objectbox #button-toggleObjectBoxSize {
+    height: 42px;
+    width: 42px;
+    border-radius: 42px;
+    transform: rotate(180deg);
+    background-image: url("../assets/toolbox/icon-sizetoggle.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 42px;
+    margin-bottom: 12px; }
+  #objectbox.small {
+    transform: none; }
+    #objectbox.small #button-toggleObjectBoxSize {
+      transform: rotate(0deg); }
+    #objectbox.small .object-wrapper {
+      max-height: 200px; }
+
+#toolbox.createPoint #createpoint-dialogbox {
+  display: flex; }
+
+#createpoint-dialogbox {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 948px;
+  margin: 0 auto 36px; }
+  #createpoint-dialogbox label {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 24px;
+    text-transform: uppercase;
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 700;
+    color: rgba(41, 41, 41, 0.8); }
+    #createpoint-dialogbox label input, #createpoint-dialogbox label select, #createpoint-dialogbox label option {
+      text-transform: uppercase;
+      width: 130px;
+      background-color: rgba(255, 255, 255, 0.5);
+      color: #292929;
+      border-radius: 4px;
+      border: none;
+      font-size: 36px;
+      line-height: 36px;
+      font-weight: 700;
+      text-align: left;
+      padding: 0 12px;
+      margin-left: 12px; }
+  #createpoint-dialogbox button#button-submitCreatePointDialogBox {
+    background-image: url("../assets/toolbox/icon-submitcreatepointdialog.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50px;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px; }
+
+#additional-axle-ends {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  pointer-events: none;
+  z-index: 100; }
+  #additional-axle-ends .additional-axle-ends {
+    pointer-events: none;
+    opacity: 0;
+    width: 30px;
+    height: 30px;
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 30px;
+    font-weight: 700;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0; }
+    #additional-axle-ends .additional-axle-ends.visible {
+      opacity: 1; }
+
+/*# sourceMappingURL=index.css.map */

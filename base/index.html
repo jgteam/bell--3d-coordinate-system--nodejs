@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+
+        <!-- Titel  -->
+        <title>three.js test 1</title>
+
+        <!-- Meta-Tags  -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!-- Verknüpfung des Stylesheets  -->
+        <link href="css/index.css" rel="stylesheet">
+
+        <!--
+            Einbindung von:
+            - jQuery, für vereinfachten Javascript-Code
+            - Three.js, für die 3D-Darstellung von den DOM-Elementen
+        -->
+        <script src="vendors/jquery/jquery.min.js"></script>
+        <script src="vendors/threejs/three.min.js"></script>
+
+        <!-- Einbindung des Javascript-Hauptskriptes für die Webapplikation -->
+        <script type="module" src="js/main.js"></script>
+        <!-- Läd das Softwarestack-Spezifische Skript für die Kommunikation zwischen Server und Browser -->
+        <script type="application/javascript" src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        <script type="application/javascript" src="/api/socket"></script>
+
+
+    </head>
+    <body>
+
+        <!-- Toolbox: Befindet sich am unteren Fensterrand und beinhaltet die Bedienelemente der Applikation -->
+        <div id="toolbox" class="gui-container">
+
+            <!--
+                Createpoint-Dialogbox:
+                Beinhaltet die Input-Elemente für die Erstellung von neuen Punkten und ist standardmäßig versteckt.
+                Dialog öffnet sich nach dem Klicken auf den "Neuen Punkt erstellen"-Button
+            -->
+            <div id="createpoint-dialogbox" class="dialog-wrapper wrapper">
+
+                <!-- Alle Input- und Label-Elemente für X-, Y- und Z-Koordinate und Farbe des Punktes -->
+                <label for="x-value">x:
+                    <input id="x-value" name="x-value"
+                           type="number"
+                           max="100"
+                           min="-100"
+                           value="0">
+                </label>
+                <label for="y-value">y:
+                    <input id="y-value" name="y-value"
+                           type="number"
+                           max="100"
+                           min="-100"
+                           value="0">
+                </label>
+                <label for="z-value">z:
+                    <input id="z-value" name="z-value"
+                           type="number"
+                           max="100"
+                           min="-100"
+                           value="0">
+                </label>
+
+                <!-- Bestätigungsknopf für die Erstellung des neuen Punktes -->
+                <button class="gui-button" id="button-submitCreatePointDialogBox"></button>
+
+            </div>
+
+            <!-- Button-Wrapper: Beinhaltet alle Aktions- und Modi-Buttons, sowie die Tooltips (Kurzinfotexte) -->
+            <div class="button-wrapper wrapper">
+
+                <!-- Tooltips -->
+                <div class="tooltips">
+
+                    <!-- Object-Tooltip: Zeigt Informationen über das aktuell ausgewählte Element an -->
+                    <div class="tooltip" id="object-tooltip"><i>nichts ausgewählt</i></div>
+
+                    <!-- Button-Tooltip: Zeigt Informationen über die verschiedenen Aktions- und Modi-Buttons -->
+                    <div class="tooltip" id="button-tooltip">Aktuell: Bewegungsmodus</div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="buttons">
+
+                    <!-- Alle Modi-Buttons -->
+                    <button class="button-mode gui-button"
+                            id="button-modeMove"
+                            mode="move"
+                            tooltip="Bewegungsmodus">
+                    </button>
+                    <button class="button-mode gui-button"
+                            id="button-modeSelectPoint"
+                            mode="selectPoint"
+                            tooltip="Auswahlmodus für Punkte">
+                    </button>
+                    <button class="button-mode gui-button"
+                            id="button-modeSelectPointConnection"
+                            mode="selectPointConnection"
+                            tooltip="Auswahlmodus für Strecken">
+                    </button>
+
+                    <!-- Visuelle Trennwand -->
+                    <div class="divider"></div>
+
+                    <!-- Aktionsbuttons für die Erstellung von neuen Objekten -->
+                    <button class="gui-button" id="button-createPoint"
+                            tooltip="Neuen Punkt erstellen">
+                    </button>
+                    <button class="gui-button" id="button-createPointConnection"
+                            tooltip="Neue Strecke zwischen zwei Punkten erzeugen">
+                    </button>
+                    <button class="gui-button" id="button-createPlane"
+                            tooltip="Neue Ebene durch drei Punkten erzeugen">
+                    </button>
+
+                    <!-- Visuelle Trennwand -->
+                    <div class="divider"></div>
+
+                    <button class="gui-button" id="button-toggleCustomnameSize"
+                            tooltip="Wechsel zwischen verschiedenen Beschriftungsgrößen">
+                    </button>
+
+                    <!-- Aktionsbuttons for die Kamera -->
+                    <button class="gui-button" id="button-resetCamera"
+                            tooltip="Wechsel zwischen verschiedenen Kameraperspektiven">
+                    </button>
+                    <button class="gui-button" id="button-selectCameraTarget"
+                            tooltip="Wähle einen Punkt als Kamerafokus">
+                    </button>
+                    <button class="gui-button" id="button-resetCameraTarget"
+                            tooltip="Setzt den Kamerafokus auf den Koordinatenursprung">
+                    </button>
+
+                    <!-- Visuelle Trennwand -->
+                    <div class="divider"></div>
+
+                    <!-- Color Selector -->
+                    <label for="color">
+                        <select id="color" name="color"><!-- Wird nachträglich per JavaScript ausgefüllt --></select>
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--
+            Objectbox:
+            Befindet sich links unten, in der Bildschirmecke, und beinhaltet alle Objekte,
+            welche auch im Koordinatensystem zu finden sind, in Listenform
+        -->
+        <div id="objectbox" class="gui-container small">
+
+            <!-- Toggle-Button um zwischen zwei Größen der Objectbox wechseln zu können -->
+            <button class="gui-button" id="button-toggleObjectBoxSize"></button>
+
+            <!-- Object-Wrapper: Beinhaltet schließlich die einzelnen Objekte -->
+            <div class="object-wrapper wrapper"></div>
+
+        </div>
+
+        <div class="gui-container">
+
+            <div class="importexport-wrapper wrapper">
+
+                <!--
+                    Versteckter Anchor-Tag, welcher später über Javascript einen automatischen Download starten kann
+                    https://stackoverflow.com/a/19328891
+                -->
+                <a id="hidden_export_link" download="3D_COORDINATE_OBJECTS.txt" href=""></a>
+
+                <!-- Aktionsbutton, für das Exportieren der aktuellen Objekte -->
+                <button id="download" class="gui-button" tooltip="Exportieren"></button>
+
+                <!--
+                    Input-Element für das Öffnen von lokalen Dateien
+                    https://stackoverflow.com/questions/3582671/how-to-open-a-local-disk-file-with-javascript
+                -->
+                <input type="file" id="import" class="gui-button" tooltip="Importieren"/>
+
+                <!-- Aktionsbutton, für das Löschen aller Objekte -->
+                <button id="button-deleteAll" class="gui-button" tooltip="Alle Objekte löschen"></button>
+
+            </div>
+
+        </div>
+
+        <!-- Weitere Achsenbeschriftung, welche sichtbar wird, wenn die eigentliche Achsenbeschriftung durch
+        Zoom oder Verschiebung nicht mehr im Sichtfeld ist -->
+        <div id="additional-axle-ends">
+            <div class="x additional-axle-ends">x</div>
+            <div class="y additional-axle-ends">Y</div>
+            <div class="z additional-axle-ends">Z</div>
+        </div>
+
+    </body>
+</html>
