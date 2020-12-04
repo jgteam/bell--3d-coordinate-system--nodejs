@@ -1,6 +1,6 @@
 # 3D Koordinatensystem (Stack: Node)
 
-💡 Dieses Repo ist im Zusammenhang mit der besonderen Lernleistung im Fach Informatik von Jannis Günsche entstanden.
+💡 Dieses Repo ist im Zusammenhang mit der [besonderen Lernleistung im Fach Informatik von Jannis Günsche](https://github.com/jgteam/bell--paper) entstanden.
 
 ## Installation
 ```
