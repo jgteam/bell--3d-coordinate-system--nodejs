@@ -1,3 +1,5 @@
+// threejs.org/license
+
 import {
 	EventDispatcher,
 	MOUSE,

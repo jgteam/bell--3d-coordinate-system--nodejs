@@ -1,3 +1,5 @@
+// threejs.org/license
+
 import {
 	Matrix4,
 	Object3D,
