@@ -11,6 +11,12 @@ var roomIdClientCounter = {};
 
 const port = process.env.PORT || "3000";
 
+function _log(event, roomid, msg) {
+    if(msg == "")
+        msg = "socket.on-event triggered";
+
+    console.log("[" + event.toUpperCase() + " in Room " + roomid + "] " + msg);
+}
 
 // Express Request Handler
 app.get(['/', '/room'], function(req, res){
@@ -34,14 +40,14 @@ app.get('/api/isRoomTaken/:id([0-9]{' + roomIdMinLenght + ',})', function(req, r
 });
 
 
-app.get('/api/:function/:parameter', function(req, res){
+/*app.get('/api/:function/:parameter', function(req, res){
     res.json(
         {
             function: req.params.function,
             parameter: req.params.parameter
         }
     );
-});
+});*/
 
 // Start Listening for Request
 http.listen(port, function(){
@@ -51,7 +57,7 @@ http.listen(port, function(){
 // Socket.io Handler
 io.sockets.on('connection', function(socket) {
 
-    socket.on('joinRoom', function(roomId) {
+    socket.on('join', function(roomId) {
 
         if(roomIdRegEx.test(roomId)){
             roomId += "";
@@ -63,11 +69,14 @@ io.sockets.on('connection', function(socket) {
             } else {
                 roomIdClientCounter[roomId]++;
                 socket.emit('setHost', false);
+
+
+                // SEND CURRENT STATE TO CLIENT
+
+
             }
 
-
-
-            console.log("Room " + roomId + ": UserCount: " + roomIdClientCounter[roomId]);
+            _log("join", roomId, "New user. Usercount: " + roomIdClientCounter[roomId]);
 
             socket.join(roomId);
             socket.roomId = roomId;
@@ -77,19 +86,23 @@ io.sockets.on('connection', function(socket) {
 
     });
 
-    socket.on('socketRequest', function(req) {
+    socket.on('requestChange', function(req) {
 
-        console.log("Room " + socket.roomId + ": New SocketRequest");
+        // req: Beinhaltet die gewünschte Aktion
 
-        io.in(socket.roomId).emit('executeSocketRequest', req);
+        _log("requestChange", socket.roomId, "New change requested");
+
+        io.in(socket.roomId).emit('sendRequestToHost', req);
 
     });
 
-    socket.on('broadcastSocketRequest', function(reqAndCounters) {
+    socket.on('grantChange', function(reqAndCounters) {
 
-        console.log("Room " + socket.roomId + ": New BroadcastSocketRequest");
+        // reqAndCounters: Beinhaltet die gewünschte Aktion und Variablen wie die Zähler für Punkt, Strecke und Fläche
 
-        io.in(socket.roomId).emit('deploySocketRequest', reqAndCounters);
+        _log("grantChange", socket.roomId, "New change granted. Broadcasting now...");
+
+        io.in(socket.roomId).emit('broadcastChange', reqAndCounters);
 
     });
 
@@ -97,5 +110,5 @@ io.sockets.on('connection', function(socket) {
 
 io.sockets.on('disconnect', function (socket) {
     roomIdClientCounter[socket.roomId]--;
-    console.log("Room " + socket.roomId + ": UserCount: " + roomIdClientCounter[socket.roomId]);
+    _log("disconnect", socket.roomId, "User disconnected. Usercount: " + roomIdClientCounter[socket.roomId]);
 });

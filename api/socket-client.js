@@ -1,32 +1,46 @@
 var socket = io.connect();
 
+var roomId = null;
 
-window.createSocketRequest = createSocketRequest;
-function createSocketRequest(req) {
-    socket.emit('socketRequest', req);
+function _log(event, roomid, msg) {
+    if(msg == "")
+        msg = "socket.on-event triggered";
+
+    console.log("[" + event.toUpperCase() + " in Room " + roomid + "] " + msg);
+}
+
+window.createChangeRequest = createChangeRequest;
+function createChangeRequest(req) {
+    _log("createChangeRequest()", roomId, "Creating new change request");
+    socket.emit('requestChange', req);
 }
 
 socket.on('setHost', function(value){
+    _log("setHost", roomId, "Set Host status to " + value);
     baseapp.setClientIsHostingRoom(value);
-    console.log("IsRoomHost: " + value);
 });
 
-socket.on('executeSocketRequest', function(req){
+socket.on('sendRequestToHost', function(req){
+    _log("sendRequestToHost", roomId, "Receiving change request for review (HOST ONLY)");
+
     if(baseapp.getClientIsHostingRoom() !== true){
-        console.log("executeSocketRequest: not the Host, not executing");
+        _log("sendRequestToHost", roomId, "Not reviewing request, because guest status");
         return;
     }
-    console.log("executeSocketRequest: executing as Host");
-    socket.emit('broadcastSocketRequest', {req: req, counters: baseapp.getCounters()});
+    _log("sendRequestToHost", roomId, "Reviewing request as host. Sending 'grantChange'");
+
+    baseapp.updateBroadcastCounter(req.type);
+    socket.emit('grantChange', {req: req, counters: baseapp.getCounters()});
 });
 
-socket.on('deploySocketRequest', function(reqAndCounters){
-    console.log("deploySocketRequest: executing as Client");
+socket.on('broadcastChange', function(reqAndCounters){
+    _log("broadcastChange", roomId, "Receiving granted change request");
+
     var counters = reqAndCounters.counters;
     baseapp.setCounters(counters);
 
     var req = reqAndCounters.req;
-    console.log(req);
+    _log("broadcastChange", roomId, "Request: " + req);
 
     if(req.action == "create") {
 
@@ -68,6 +82,22 @@ $(document).ready(function() {
     //baseapp.createPoint(false,"red", 1, 2, 2);
 
 
-    socket.emit('joinRoom', 123);
+    // https://stackoverflow.com/questions/4758103/last-segment-of-url-in-jquery
+    // RoomID aus der URL auslesen
+    var url = window.location.href.replace(/\/$/, '');
+    var urlRoomId = url.substr(url.lastIndexOf('/') + 1);
+
+    roomId = urlRoomId;
+
+    _log("JOIN", roomId, "Document ready: Joining room")
+    socket.emit('join', roomId);
 
 });
+
+
+
+
+
+
+
+

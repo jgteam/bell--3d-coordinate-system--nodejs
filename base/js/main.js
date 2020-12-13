@@ -75,6 +75,11 @@ var pointCounter = 1;
 var pointConnectionCounter = 1;
 var planeCounter = 1;
 
+// Zähler für den Host (zählt bei jedem "updateBroadcastCounter" hoch)
+var broadcastedPointCounter = 1;
+var broadcastedPointConnectionCounter = 1;
+var broadcastedPlaneCounter = 1;
+
 // Aktuelle Rotation des Koordinatensystem/Kameraposition
 // 0 = freie Rotation
 // 1 = XYZ-Achse (= welche beim Seitenaufruf in Verwendung ist)
@@ -1003,7 +1008,7 @@ function createPoint(
 
     if (/*!clientIsHostingRoom && */!fromsocket) {
         pointCounter--;
-        createSocketRequest(
+        createChangeRequest(
             {
                 action: "create",
                 type: "point",
@@ -1079,7 +1084,7 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
 
     if (/*!clientIsHostingRoom && */!fromsocket) {
         pointConnectionCounter--;
-        createSocketRequest(
+        createChangeRequest(
             {
                 action: "create",
                 type: "pointConnection",
@@ -1174,14 +1179,14 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
     addObjectBoxEntry(pointConnection_element_class, name.replace("pointConnection", "Strecke Nr."), "pointConnection");
 
     //center-point:
-    if(!fromimport){
+    /*if(!fromimport && clientIsHostingRoom){
         createPoint(true,
             "grey",
             (position_a_coordinates.x + position_b_coordinates.x) / 2,
             (position_a_coordinates.y + position_b_coordinates.y) / 2,
             (position_a_coordinates.z + position_b_coordinates.z) / 2
         );
-    }
+    }*/
 
 }
 
@@ -1202,7 +1207,7 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
 
     if (/*!clientIsHostingRoom && */!fromsocket) {
         planeCounter--;
-        createSocketRequest(
+        createChangeRequest(
             {
                 action: "create",
                 type: "plane",
@@ -1266,7 +1271,7 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
 
 
     //"center"-point:
-    if(!fromimport){
+    /*if(!fromimport && clientIsHostingRoom){
         createPoint(
             true,
             "grey",
@@ -1274,7 +1279,7 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
             (position_a_coordinates.y + position_b_coordinates.y + position_c_coordinates.y) / 3,
             (position_a_coordinates.z + position_b_coordinates.z + position_c_coordinates.z) / 3
         );
-    }
+    }*/
 
 }
 
@@ -1381,6 +1386,7 @@ function selectObject() {
     }
 
     var object_class = $(this).attr("class").split(" ").pop();
+    console.log(object_class);
 
     if(!$("#renderer").hasClass("createPlane"))
         $("#renderer > div > .selected").removeClass("selected");
@@ -1413,8 +1419,6 @@ function selectObject() {
         $("#toolbox #object-tooltip.tooltip").html("Strecke Nr." + selectedObject.attr("number") + " <b>(" + selectedObject.attr("start_x") + "|" + selectedObject.attr("start_y") + "|" + selectedObject.attr("start_z") + ")</b> bis <b>(" + selectedObject.attr("end_x") + "|" + selectedObject.attr("end_y") + "|" + selectedObject.attr("end_z") + ")</b>").addClass("active");
 
     }
-
-
 
 }
 
@@ -1765,6 +1769,17 @@ function getClientIsHostingRoom() {
 }
 baseapp.getClientIsHostingRoom = getClientIsHostingRoom;
 
+function updateBroadcastCounter(type) {
+    if(type == "point"){
+        broadcastedPointCounter++;
+    }else if(type == "pointConnection"){
+        broadcastedPointConnectionCounter++;
+    }else if(type == "plane"){
+        broadcastedPlaneCounter++;
+    }
+}
+baseapp.updateBroadcastCounter = updateBroadcastCounter;
+
 function setCounters(counters) {
     pointCounter = counters.points;
     pointConnectionCounter = counters.pointConnections;
@@ -1773,7 +1788,7 @@ function setCounters(counters) {
 baseapp.setCounters = setCounters;
 
 function getCounters() {
-    return {points: pointCounter, pointConnections: pointConnectionCounter, planes: planeCounter};
+    return {points: broadcastedPointCounter, pointConnections: broadcastedPointConnectionCounter, planes: broadcastedPlaneCounter};
 }
 baseapp.getCounters = getCounters;
 
