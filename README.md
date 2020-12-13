@@ -12,3 +12,11 @@ Start server:
 ```
 npm start
 ```
+
+## WebSockets: Visueller Graph
+
+[(PDF) WebSockets-Graph](docs/websockets-graph.pdf)
+|
+[(PNG) WebSockets-Graph](docs/websockets-graph.png)
+
+![WebSockets-Graph](docs/websockets-graph.png)
