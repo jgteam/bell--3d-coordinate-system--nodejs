@@ -76,9 +76,9 @@ var pointConnectionCounter = 1;
 var planeCounter = 1;
 
 // Zähler für den Host (zählt bei jedem "updateBroadcastCounter" hoch)
-var broadcastedPointCounter = 1;
-var broadcastedPointConnectionCounter = 1;
-var broadcastedPlaneCounter = 1;
+var broadcastedPointCounter = 0;
+var broadcastedPointConnectionCounter = 0;
+var broadcastedPlaneCounter = 0;
 
 // Aktuelle Rotation des Koordinatensystem/Kameraposition
 // 0 = freie Rotation
