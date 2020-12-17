@@ -376,4 +376,47 @@
     #additional-axle-ends .additional-axle-ends.visible {
       opacity: 1; }
 
+#connection-overview {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  padding: 13px 20px;
+  background-color: white;
+  border-radius: 7px;
+  display: flex;
+  pointer-events: none; }
+  #connection-overview input {
+    pointer-events: auto; }
+  #connection-overview *:not(input) {
+    pointer-events: none; }
+    #connection-overview *:not(input).roomid .value {
+      pointer-events: auto;
+      -webkit-touch-callout: text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text; }
+  #connection-overview > span {
+    margin-left: 35px; }
+    #connection-overview > span b {
+      margin-left: 8px; }
+  #connection-overview input, #connection-overview span, #connection-overview b {
+    background-color: transparent;
+    border: none;
+    font-family: monospace;
+    display: flex;
+    text-align: right; }
+@keyframes red-blink {
+  0% {
+    background-color: #ffb5b5; }
+  50% {
+    background-color: #ffefef; }
+  100% {
+    background-color: #ffb5b5; } }
+  #connection-overview input:invalid {
+    animation-name: red-blink;
+    animation-duration: 10s;
+    animation-iteration-count: 12;
+    background-color: #ffb5b5; }
+
 /*# sourceMappingURL=index.css.map */

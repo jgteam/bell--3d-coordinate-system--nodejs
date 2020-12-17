@@ -20,8 +20,10 @@ function _log(event, roomid, msg) {
 
 // Express Request Handler
 app.get(['/', '/room'], function(req, res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index/index.html');
 });
+
+app.use('/index/', express.static('index'));
 
 app.get('/room/:id([0-9]{' + roomIdMinLenght + ',})', function(req, res){
     res.sendFile(__dirname + '/base/index.html');
@@ -33,10 +35,20 @@ app.get('/api/socket', function(req, res){
     res.sendFile(__dirname + '/api/socket-client.js');
 });
 
-app.get('/api/isRoomTaken/:id([0-9]{' + roomIdMinLenght + ',})', function(req, res){
+app.get('/api/isRoomTaken/:id', function(req, res){
     var isTaken = !(roomIdClientCounter[req.params.id] === undefined || roomIdClientCounter[req.params.id] === 0)
 
     res.json({isTaken: isTaken});
+});
+
+app.get('/api/getNewRoomId', function(req, res){
+    var roomId = Math.ceil(Math.random() * 899999) + 100000;
+
+    while(!(roomIdClientCounter[roomId] === undefined || roomIdClientCounter[roomId] === 0)) {
+        roomId = Math.ceil(Math.random() * 899999) + 100000;
+    }
+
+    res.json({roomId: roomId});
 });
 
 

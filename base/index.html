@@ -3,7 +3,7 @@
     <head>
 
         <!-- Titel  -->
-        <title>three.js test 1</title>
+        <title>3D-Koordinatensystem</title>
 
         <!-- Meta-Tags  -->
         <meta charset="utf-8">
@@ -14,7 +14,7 @@
 
         <!--
             Einbindung von:
-            - jQuery, für vereinfachten Javascript-Code
+            - jQuery, für "vereinfachten" Javascript-Code
             - Three.js, für die 3D-Darstellung von den DOM-Elementen
         -->
         <script src="vendors/jquery/jquery.min.js"></script>
@@ -29,6 +29,17 @@
 
     </head>
     <body>
+
+        <div id="connection-overview">
+
+            <input class="username" contenteditable="true" required placeholder="dein Benutzername"/>
+            <span class="userrole">Role: <b class="value">-</b></span>
+            <span class="roomid">RoomId: <b class="value">-</b></span>
+            <span class="usercount">Usercount: <b class="value">-</b></span>
+            <span class="ping-server">Ping (Server): <b class="value">-</b>ms</span>
+            <span class="ping-host">Ping (Host): <b class="value">-</b>ms</span>
+
+        </div>
 
         <!-- Toolbox: Befindet sich am unteren Fensterrand und beinhaltet die Bedienelemente der Applikation -->
         <div id="toolbox" class="gui-container">

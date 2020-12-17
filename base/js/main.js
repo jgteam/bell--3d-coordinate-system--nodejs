@@ -90,7 +90,7 @@ var rotationPosition = 1;
 
 // Legt die Farbauswahl für die Objekte im Koordinatensystem fest
 var domColors = [
-    "black",
+    /*"black",
     "red",
     "orange",
     "coral",
@@ -99,7 +99,75 @@ var domColors = [
     "purple",
     "green",
     "deeppink",
-    "lime",
+    "lime",*/
+    "Black",
+    "Crimson",
+    "Red",
+    "FireBrick",
+    "DarkRed",
+    "DeepPink",
+    "MediumVioletRed",
+    "Coral",
+    "Tomato",
+    "OrangeRed",
+    "DarkOrange",
+    "Orange",
+    "Gold",
+    "Yellow",
+    "Indigo",
+    "MediumSlateBlue",
+    "SlateBlue",
+    "DarkSlateBlue",
+    "GreenYellow",
+    "Chartreuse",
+    "LawnGreen",
+    "Lime",
+    "LimeGreen",
+    "MediumSeaGreen",
+    "SeaGreen",
+    "ForestGreen",
+    "Green",
+    "DarkGreen",
+    "YellowGreen",
+    "OliveDrab",
+    "Olive",
+    "DarkOliveGreen",
+    "MediumAquamarine",
+    "DarkSeaGreen",
+    "LightSeaGreen",
+    "DarkCyan",
+    "Teal",
+    "CadetBlue",
+    "SteelBlue",
+    "LightSteelBlue",
+    "DodgerBlue",
+    "CornflowerBlue",
+    "RoyalBlue",
+    "Blue",
+    "MediumBlue",
+    "DarkBlue",
+    "Navy",
+    "MidnightBlue",
+    "BurlyWood",
+    "Tan",
+    "RosyBrown",
+    "SandyBrown",
+    "Goldenrod",
+    "DarkGoldenrod",
+    "Peru",
+    "Chocolate",
+    "SaddleBrown",
+    "Sienna",
+    "Brown",
+    "Maroon",
+    "Silver",
+    "DarkGray",
+    "Gray",
+    "DimGray",
+    "LightSlateGray",
+    "SlateGray",
+    "DarkSlateGray",
+    "Black",
 ];
 
 // Felder für die spätere Speicherung von CSS3D-Objekten, welche das Koordinatensystem an sich aufbauen
@@ -1344,7 +1412,7 @@ function selectObject() {
         var y3 = second_point.attr("y");
         var z3 = second_point.attr("z");
 
-        createPlane(false, false, $("#color").val(),
+        createPlane(false, false, $("#color").val().toLowerCase(),
             coordinatesToTHREEVector3(x1, y1, z1),
             coordinatesToTHREEVector3(x2, y2, z2),
             coordinatesToTHREEVector3(x3, y3, z3)
@@ -1375,7 +1443,7 @@ function selectObject() {
         var y2 = second_point.attr("y");
         var z2 = second_point.attr("z");
 
-        createPointConnection(false, false, $("#color").val(),
+        createPointConnection(false, false, $("#color").val().toLowerCase(),
             coordinatesToTHREEVector3(x1, y1, z1),
             coordinatesToTHREEVector3(x2, y2, z2)
         );
@@ -1457,7 +1525,7 @@ function buttonSubmitCreatePoint() {
     var y_value = (createPointDialog.find("#y-value").val() !== "") ? createPointDialog.find("#y-value").val() : 0;
     var z_value = (createPointDialog.find("#z-value").val() !== "") ? createPointDialog.find("#z-value").val() : 0;
 
-    createPoint(false, $("#color").val(), x_value, y_value, z_value);
+    createPoint(false, $("#color").val().toLowerCase(), x_value, y_value, z_value);
 
 }
 

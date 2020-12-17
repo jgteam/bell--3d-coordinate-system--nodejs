@@ -18,6 +18,11 @@ function createChangeRequest(req) {
 socket.on('setHost', function(value){
     _log("setHost", roomId, "Set Host status to " + value);
     baseapp.setClientIsHostingRoom(value);
+    if(value == true){
+        $("#connection-overview .userrole .value").text("Host");
+    } else {
+        $("#connection-overview .userrole .value").text("Guest");
+    }
 });
 
 socket.on('sendRequestToHost', function(req){
@@ -88,6 +93,7 @@ $(document).ready(function() {
     var urlRoomId = url.substr(url.lastIndexOf('/') + 1);
 
     roomId = urlRoomId;
+    $("#connection-overview .roomid .value").text(roomId);
 
     _log("JOIN", roomId, "Document ready: Joining room")
     socket.emit('join', roomId);
