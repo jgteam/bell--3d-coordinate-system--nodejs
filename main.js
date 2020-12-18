@@ -82,16 +82,17 @@ io.sockets.on('connection', function(socket) {
                 roomIdClientCounter[roomId]++;
                 socket.emit('setHost', false);
 
-
                 // SEND CURRENT STATE TO CLIENT
-
 
             }
 
-            _log("join", roomId, "New user. Usercount: " + roomIdClientCounter[roomId]);
+
 
             socket.join(roomId);
             socket.roomId = roomId;
+
+            _log("join", roomId, "New user. Usercount: " + roomIdClientCounter[roomId]);
+            io.in(socket.roomId).emit('updateUsercount', roomIdClientCounter[socket.roomId]);
         } else {
             socket.disconnect(true);
         }
@@ -118,9 +119,21 @@ io.sockets.on('connection', function(socket) {
 
     });
 
+    socket.on('ping', function(roomId) {
+        if (roomIdClientCounter[roomId] === undefined) {
+            // room doesnt exist, server restarted?
+        }
+        socket.emit('pong');
+    });
+
+    socket.on('pushCameraPosition', function(cameraPosition) {
+        io.in(socket.roomId).emit('broadcastCameraPosition', cameraPosition);
+    });
+
 });
 
 io.sockets.on('disconnect', function (socket) {
     roomIdClientCounter[socket.roomId]--;
     _log("disconnect", socket.roomId, "User disconnected. Usercount: " + roomIdClientCounter[socket.roomId]);
+    io.in(socket.roomId).emit('updateUsercount', roomIdClientCounter[socket.roomId]);
 });

@@ -612,6 +612,8 @@ function init() {
 
     $("#objectbox #button-toggleObjectBoxSize").on("click", buttonToggleObjectBoxSize);
 
+    $("#notifications").on("mouseleave", function (){$(this).scrollTop(0)});
+
     // Eventlistener für die Tooltips
 
     // Zeigt den Tooltip bei einem Hover- oder Mouseover-Event,
@@ -1543,6 +1545,7 @@ function buttonCreatePlane() {
 
 }
 
+// deletes selected Object... creates request to delete clicked object
 function deleteObject() {
 
     setRendererUserMode("move");
@@ -1551,7 +1554,26 @@ function deleteObject() {
     var objectClass = objectBoxObjectEntry.attr("linked_object");
     var objectType = objectBoxObjectEntry.attr("linked_object_type");
 
-    objectBoxObjectEntry.remove();
+    createChangeRequest(
+        {
+            action: "delete",
+            type: objectType,
+            properties: {
+                objectClass: objectClass
+            }
+        }
+    );
+
+    //executeDeleteObject(objectClass, objectType);
+
+}
+
+function executeDeleteObject(objectClass, objectType) {
+
+    $("#objectbox .object[linked_object='" + objectClass + "']").remove();
+
+    console.log(objectType);
+    console.log(objectClass);
 
     if(objectType === "plane"){
 
@@ -1563,7 +1585,9 @@ function deleteObject() {
         // each, wegen den strecken, müssen zwei mal gelöscht werden
         $("#renderer > div > .object." + objectClass).each(function () {
 
-            scene.remove(scene.getObjectByName($(this).attr("class")));
+            console.log($(this));
+
+            scene.remove(scene.getObjectByName($(this).removeClass("selected").attr("class")));
 
         });
 
@@ -1659,6 +1683,27 @@ function buttonSelectCameraTarget() {
 function buttonResetCameraTarget() {
 
     controls.target = coordinatesToTHREEVector3(0, 0, 0);
+    controls.update();
+
+}
+
+function getCameraPosition() {
+
+    return {
+        target: controls.target,
+        position: camera.position,
+        zoom: camera.zoom
+    };
+
+}
+
+function setCameraPosition(cameraPosition) {
+
+    controls.target = new THREE.Vector3( cameraPosition.target.x, cameraPosition.target.y, cameraPosition.target.z);
+    camera.position.copy(cameraPosition.position);
+    camera.zoom = cameraPosition.zoom;
+
+    camera.updateProjectionMatrix();
     controls.update();
 
 }
@@ -1818,11 +1863,21 @@ function importJSON(jsonString) {
 
 }
 
+function createNotification(type, text) {
+
+    $('#notifications').prepend("<div class='notification " + type + "'>" + text + "</div>");
+
+}
+
 var baseapp = {};
+
+baseapp.createNotification = createNotification;
 
 baseapp.createPoint = createPoint;
 baseapp.createPointConnection = createPointConnection;
 baseapp.createPlane = createPlane;
+
+baseapp.executeDeleteObject = executeDeleteObject;
 
 baseapp.coordinatesToTHREEVector3 = coordinatesToTHREEVector3;
 baseapp.THREEVector3ToCoordinates = THREEVector3ToCoordinates;
@@ -1864,5 +1919,8 @@ function setRoomId(int) {
     roomId = int;
 }
 baseapp.setRoomId = setRoomId;
+
+baseapp.setCameraPosition = setCameraPosition;
+baseapp.getCameraPosition = getCameraPosition;
 
 window.baseapp = baseapp;
