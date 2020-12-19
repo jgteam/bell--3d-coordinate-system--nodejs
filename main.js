@@ -126,8 +126,12 @@ io.sockets.on('connection', function(socket) {
         socket.emit('pong');
     });
 
-    socket.on('pushCameraPosition', function(cameraPosition) {
-        io.in(socket.roomId).emit('broadcastCameraPosition', cameraPosition);
+    socket.on('pushCameraAndMousePosition', function(cameraAndMousePosition) {
+        io.in(socket.roomId).emit('broadcastCameraAndMousePosition', cameraAndMousePosition);
+    });
+
+    socket.on('pushMirroringState', function(active) {
+        io.in(socket.roomId).emit('broadcastMirroringState', active);
     });
 
 });

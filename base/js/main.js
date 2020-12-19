@@ -191,6 +191,8 @@ var customnameSizes = [
 var clientIsHostingRoom = true;
 var roomId = null;
 
+var currentMousePos = { x: "0vh", y: "0vh" };
+
 // Initialisation
 init();
 // Animation starten
@@ -591,7 +593,7 @@ function init() {
     // Funktion, welche aufgerufen wird, falls sich die Fenstergröße ändern sollte
     window.addEventListener( 'resize', onWindowResize, false );
 
-    // Alle Eventlistener für die GUI-Buttons
+    // Alle Eventlistener (für die GUI-Buttons)
 
     $("#toolbox button#button-createPoint").on("click", buttonCreatePoint);
     $("#toolbox button#button-createPointConnection").on("click", buttonCreatePointConnection);
@@ -611,6 +613,8 @@ function init() {
     $("#toolbox #createpoint-dialogbox #button-submitCreatePointDialogBox").on("click", buttonSubmitCreatePoint);
 
     $("#objectbox #button-toggleObjectBoxSize").on("click", buttonToggleObjectBoxSize);
+
+    $("#toolbox #button-mirror").on("click", toggleMirroring);
 
     $("#notifications").on("mouseleave", function (){$(this).scrollTop(0)});
 
@@ -635,6 +639,17 @@ function init() {
     $("#import").on("change", importFile);
     $("#download").on("click", downloadExportBlob);
     $("#button-deleteAll").on("click", deleteAll);
+
+    // https://stackoverflow.com/a/4517215
+    $(document).mousemove(function(event) {
+
+        var pageHeight = $(window).height();
+        var pageWidth = $(window).width();
+
+        currentMousePos.x = ((event.pageX - pageWidth / 2) / pageHeight * 100) + "vh";
+        currentMousePos.y = ((event.pageY - pageHeight / 2) / pageHeight * 100) + "vh";
+
+    });
 
 }
 
@@ -1456,7 +1471,6 @@ function selectObject() {
     }
 
     var object_class = $(this).attr("class").split(" ").pop();
-    console.log(object_class);
 
     if(!$("#renderer").hasClass("createPlane"))
         $("#renderer > div > .selected").removeClass("selected");
@@ -1465,6 +1479,7 @@ function selectObject() {
     if(!$("#renderer").hasClass("createPlane"))
         $("#objectbox .selected").removeClass("selected");
     $("#objectbox .object[linked_object='" + object_class + "']").addClass("selected");
+    $("#objectbox .object-wrapper").scrollTop(0).scrollTop($("#objectbox .object.selected").offset().top - $("#objectbox").offset().top - 52);
 
     if($("#renderer").hasClass("selectCameraTarget")) {
 
@@ -1687,24 +1702,45 @@ function buttonResetCameraTarget() {
 
 }
 
-function getCameraPosition() {
+function getCameraAndMousePosition() {
 
     return {
         target: controls.target,
         position: camera.position,
-        zoom: camera.zoom
+        zoom: camera.zoom,
+        mouse: currentMousePos
     };
 
 }
 
-function setCameraPosition(cameraPosition) {
+function setCameraAndMousePosition(cameraAndMousePosition) {
 
-    controls.target = new THREE.Vector3( cameraPosition.target.x, cameraPosition.target.y, cameraPosition.target.z);
-    camera.position.copy(cameraPosition.position);
-    camera.zoom = cameraPosition.zoom;
+    controls.target = new THREE.Vector3( cameraAndMousePosition.target.x, cameraAndMousePosition.target.y, cameraAndMousePosition.target.z);
+    camera.position.copy(cameraAndMousePosition.position);
+    camera.zoom = cameraAndMousePosition.zoom;
+    $("#mirrored-cursor").css({"transform": "translate(" + cameraAndMousePosition.mouse.x + ", " + cameraAndMousePosition.mouse.y + ")"});
 
     camera.updateProjectionMatrix();
     controls.update();
+
+    calculateAdditionalAxles();
+
+}
+
+function toggleMirroring() {
+
+    if(!$("#toolbox #button-mirror").hasClass("active")) {
+        startMirroring();
+        $("#toolbox #button-mirror").addClass("active");
+        createNotification("info", "Spiegelung gestartet.");
+        socket.emit('pushMirroringState', true);
+    } else {
+        stopMirroring();
+        $("#toolbox #button-mirror").removeClass("active");
+        createNotification("info", "Spiegelung gestoppt.");
+        socket.emit('pushMirroringState', false);
+    }
+
 
 }
 
@@ -1920,7 +1956,7 @@ function setRoomId(int) {
 }
 baseapp.setRoomId = setRoomId;
 
-baseapp.setCameraPosition = setCameraPosition;
-baseapp.getCameraPosition = getCameraPosition;
+baseapp.setCameraAndMousePosition = setCameraAndMousePosition;
+baseapp.getCameraAndMousePosition = getCameraAndMousePosition;
 
 window.baseapp = baseapp;

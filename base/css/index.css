@@ -34,6 +34,40 @@
   display: none;
   visibility: hidden; }
 
+#mirrored-cursor {
+  display: none; }
+
+body.mirrored #mirrored-cursor {
+  display: block;
+  pointer-events: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 80px;
+  width: 60px;
+  background-image: url("../assets/cursor.svg");
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-color: transparent;
+  transform: translate(0vh, 0vh); }
+body.mirrored #renderer {
+  pointer-events: none !important; }
+body.mirrored #toolbox, body.mirrored #objectbox {
+  opacity: 0 !important;
+  pointer-events: none !important; }
+body.mirrored #toolbox {
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  bottom: 30px; }
+  body.mirrored #toolbox * {
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important; }
+body.mirrored #button-deleteAll, body.mirrored #import {
+  display: none !important; }
+
 #renderer {
   z-index: -2;
   cursor: move; }
@@ -134,6 +168,9 @@
   #renderer_webGL.selectPoint, #renderer_webGL.selectPointConnection {
     opacity: .1; }
 
+body.host #button-mirror {
+  display: block !important; }
+
 #toolbox {
   position: fixed;
   display: flex;
@@ -189,12 +226,19 @@
           background-image: url("../assets/toolbox/icon-selectcameratarget.svg"); }
         #toolbox .button-wrapper .buttons button#button-resetCameraTarget {
           background-image: url("../assets/toolbox/icon-resetcameratarget.svg"); }
+        #toolbox .button-wrapper .buttons button#button-mirror {
+          display: none;
+          background-image: url("../assets/toolbox/icon-mirror.svg"); }
+          #toolbox .button-wrapper .buttons button#button-mirror.active {
+            background-image: url("../assets/toolbox/icon-mirror-active.svg"); }
     #toolbox .button-wrapper .divider {
       width: 2px;
       height: 50px;
       border-radius: 2px;
       margin: 0 24px;
       background-color: rgba(0, 0, 0, 0.3); }
+      #toolbox .button-wrapper .divider #color {
+        margin: 0 10px; }
   #toolbox.createPlane #button-createPlane {
     background-color: rgba(0, 0, 0, 0.2); }
   #toolbox.createPointConnection #button-createPointConnection {

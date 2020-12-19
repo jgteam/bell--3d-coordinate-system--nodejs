@@ -1,3 +1,7 @@
+body.host #button-mirror {
+  display: block !important;
+}
+
 #toolbox {
 
   position: fixed;
@@ -88,6 +92,13 @@
         &#button-resetCameraTarget {
           background-image: url('../assets/toolbox/icon-resetcameratarget.svg');
         }
+        &#button-mirror {
+          display: none;
+          background-image: url('../assets/toolbox/icon-mirror.svg');
+          &.active {
+            background-image: url('../assets/toolbox/icon-mirror-active.svg');
+          }
+        }
 
         background-position: center;
         background-repeat: no-repeat;
@@ -112,6 +123,10 @@
       margin: 0 24px;
 
       background-color: rgba(0, 0, 0, 0.3);
+
+      #color {
+        margin: 0 10px;
+      }
 
     }
 

@@ -10,7 +10,7 @@ function _log(event, roomid, msg) {
 }
 
 function getUsername() {
-    return ($("#connection-overview .username").val() != "") ? $("#connection-overview .username").val() : "Nutzer ohne Namen";
+    return ($("#connection-overview .username").val() != "") ? $("#connection-overview .username").val() : "Nutzer ohne Name";
 }
 
 function appendUsernameToRequest(req) {
@@ -29,6 +29,7 @@ socket.on('setHost', function(value){
     baseapp.setClientIsHostingRoom(value);
     if(value == true){
         $("#connection-overview .userrole .value").text("Host");
+        $("body").addClass("host");
         baseapp.createNotification("info", "Du bist erfolgreich dem Raum beigetreten. Dir wurde die Rolle 'Host' zugeordnet, da Du der erste Nutzer in diesem Raum bist. Du kannst Deinen Namen oben in das Feld eintragen und dann über den Link oder die ID Leute einladen.");
     } else {
         $("#connection-overview .userrole .value").text("Guest");
@@ -102,18 +103,28 @@ socket.on('broadcastChange', function(reqAndCounters){
 
 });
 
+socket.on('broadcastMirroringState', function(active){
+    if(baseapp.getClientIsHostingRoom() === true) return;
+    if(active){
+        $("body").addClass("mirrored");
+        baseapp.createNotification("info", "Spiegelung gestartet. Während der Spiegelung sind die Bearbeitungswerkzeuge deaktiviert.");
+    } else {
+        $("body").removeClass("mirrored");
+        baseapp.createNotification("info", "Spiegelung gestoppt. Die Bearbeitung ist wieder freigegeben.");
+    }
+});
 
-socket.on('broadcastCameraPosition', function(cameraPosition){
+socket.on('broadcastCameraAndMousePosition', function(cameraPosition){
     if(baseapp.getClientIsHostingRoom() === true) return;
 
-    baseapp.setCameraPosition(cameraPosition);
+    baseapp.setCameraAndMousePosition(cameraPosition);
 
 });
 
 function pushCameraPosition() {
     if(baseapp.getClientIsHostingRoom() !== true) return;
 
-    socket.emit('pushCameraPosition', baseapp.getCameraPosition());
+    socket.emit('pushCameraAndMousePosition', baseapp.getCameraAndMousePosition());
 
 }
 
@@ -121,7 +132,7 @@ var timeoutID = null;
 
 function startMirroring() {
 
-    timeoutID = window.setInterval(pushCameraPosition,50);
+    timeoutID = window.setInterval(pushCameraPosition,16);
 
 }
 
@@ -165,6 +176,12 @@ $(document).ready(function() {
 
     _log("JOIN", roomId, "Document ready: Joining room")
     socket.emit('join', roomId);
+
+
+    // https://www.sanwebe.com/2013/02/confirmation-dialog-on-leaving-page-javascript#:~:text=If%20you%20want%20to%20show,leave%20or%20reload%20the%20page.
+    $(window).bind('beforeunload', function(){
+        return "Willst du diesen Raum wirklich verlassen?";
+    });
 
 });
 

@@ -39,8 +39,9 @@
             <!--<span class="ping-host">Ping (Host): <b class="value">-</b>ms</span>-->
         </div>
 
-        <div id="notifications">
-        </div>
+        <div id="notifications"></div>
+
+        <div id="mirrored-cursor"></div>
 
         <!-- Toolbox: Befindet sich am unteren Fensterrand und beinhaltet die Bedienelemente der Applikation -->
         <div id="toolbox" class="gui-container">
@@ -148,6 +149,10 @@
 
                     <!-- Visuelle Trennwand -->
                     <div class="divider"></div>
+
+                    <button class="gui-button" id="button-mirror"
+                            tooltip="Spiegelt die Kamera und Maus auf alle Gastnutzer">
+                    </button>
 
                     <!-- Color Selector -->
                     <label for="color">
