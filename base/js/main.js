@@ -1652,7 +1652,7 @@ function buttonToggleCustomnameSize() {
             break;
     }
 
-    $("#renderer > div > .object.point").removeClass(customnameSizes).addClass(customnameSize);
+    $("#renderer > div").removeClass(customnameSizes).addClass(customnameSize);
 
 }
 

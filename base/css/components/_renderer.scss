@@ -3,10 +3,19 @@
   z-index: -2;
   cursor: move;
 
-
-
-
   > div {
+
+    &.smaller .point {
+      &::after {
+        transform: translate(-50%, 30%) scale(.5) !important;
+      }
+    }
+
+    &.hidden .point {
+      &::after {
+        display: none !important;
+      }
+    }
 
     > div {
 
@@ -38,17 +47,6 @@
               //line-height: 5px;
               //height: 5px;
 
-            }
-
-            &.smaller {
-              &::after {
-                transform: translate(-50%, 30%) scale(.5);
-              }
-            }
-            &.hidden {
-              &::after {
-                display: none;
-              }
             }
 
           }

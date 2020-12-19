@@ -71,6 +71,10 @@ body.mirrored #button-deleteAll, body.mirrored #import {
 #renderer {
   z-index: -2;
   cursor: move; }
+  #renderer > div.smaller .point::after {
+    transform: translate(-50%, 30%) scale(0.5) !important; }
+  #renderer > div.hidden .point::after {
+    display: none !important; }
   #renderer > div > div {
     pointer-events: none !important; }
     #renderer > div > div.object.point[customname]::after {
@@ -88,10 +92,6 @@ body.mirrored #button-deleteAll, body.mirrored #import {
       padding: 0 2.2px;
       border-radius: 1.4px;
       text-align: center; }
-    #renderer > div > div.object.point[customname].smaller::after {
-      transform: translate(-50%, 30%) scale(0.5); }
-    #renderer > div > div.object.point[customname].hidden::after {
-      display: none; }
     #renderer > div > div.object.point.selected {
       height: 4px !important;
       width: 4px !important; }
