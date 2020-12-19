@@ -1715,8 +1715,6 @@ function getCameraAndMousePosition() {
 
 function setCameraAndMousePosition(cameraAndMousePosition) {
 
-    setRendererUserMode("move");
-
     controls.target = new THREE.Vector3( cameraAndMousePosition.target.x, cameraAndMousePosition.target.y, cameraAndMousePosition.target.z);
     camera.position.copy(cameraAndMousePosition.position);
     camera.zoom = cameraAndMousePosition.zoom;
@@ -1959,6 +1957,8 @@ baseapp.setRoomId = setRoomId;
 
 baseapp.setCameraAndMousePosition = setCameraAndMousePosition;
 baseapp.getCameraAndMousePosition = getCameraAndMousePosition;
+
+baseapp.setRendererUserMode = setRendererUserMode;
 
 baseapp.exportAsJSON = exportAsJSON;
 baseapp.importJSON = importJSON;

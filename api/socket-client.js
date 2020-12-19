@@ -125,6 +125,7 @@ socket.on('broadcastMirroringState', function(active){
     if(baseapp.getClientIsHostingRoom() === true) return;
     if(active){
         $("body").addClass("mirrored");
+        baseapp.setRendererUserMode("move");
         baseapp.createNotification("info", "Spiegelung gestartet. Während der Spiegelung sind die Bearbeitungswerkzeuge deaktiviert.");
     } else {
         $("body").removeClass("mirrored");
