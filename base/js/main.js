@@ -1715,6 +1715,8 @@ function getCameraAndMousePosition() {
 
 function setCameraAndMousePosition(cameraAndMousePosition) {
 
+    setRendererUserMode("move");
+
     controls.target = new THREE.Vector3( cameraAndMousePosition.target.x, cameraAndMousePosition.target.y, cameraAndMousePosition.target.z);
     camera.position.copy(cameraAndMousePosition.position);
     camera.zoom = cameraAndMousePosition.zoom;
@@ -1757,7 +1759,6 @@ function buttonToggleObjectBoxSize() {
 
 // ### Funktionen für Import/Export
 
-//export/import functions
 function exportAsJSON() {
 
     var objectArray = [];
@@ -1867,7 +1868,7 @@ function importFile(e) {
     reader.readAsText(file);
 }
 
-function importJSON(jsonString) {
+function importJSON(jsonString, fromsocket = false) {
 
     var JSObject = JSON.parse(jsonString);
     var objectArray = JSObject.objects;
@@ -1876,18 +1877,18 @@ function importJSON(jsonString) {
 
         if(object.type == "point"){
 
-            var point = createPoint(false, object.properties.color, object.properties.x, object.properties.y, object.properties.z);
+            var point = createPoint(fromsocket, object.properties.color, object.properties.x, object.properties.y, object.properties.z);
             if(object.properties.customname !== "" && object.properties.customname != null){
                 $(point).attr("customname", object.properties.customname);
             }
 
         }else if(object.type == "pointConnection"){
 
-            createPointConnection(false, true, object.properties.color, coordinatesToTHREEVector3(object.properties.start_x, object.properties.start_y, object.properties.start_z), coordinatesToTHREEVector3(object.properties.end_x, object.properties.end_y, object.properties.end_z));
+            createPointConnection(fromsocket, true, object.properties.color, coordinatesToTHREEVector3(object.properties.start_x, object.properties.start_y, object.properties.start_z), coordinatesToTHREEVector3(object.properties.end_x, object.properties.end_y, object.properties.end_z));
 
         }else if(object.type == "plane"){
 
-            createPlane(false,true, object.properties.color,
+            createPlane(fromsocket,true, object.properties.color,
                 coordinatesToTHREEVector3(object.properties.position_a_x, object.properties.position_a_y, object.properties.position_a_z),
                 coordinatesToTHREEVector3(object.properties.position_b_x, object.properties.position_b_y, object.properties.position_b_z),
                 coordinatesToTHREEVector3(object.properties.position_c_x, object.properties.position_c_y, object.properties.position_c_z)
@@ -1958,5 +1959,8 @@ baseapp.setRoomId = setRoomId;
 
 baseapp.setCameraAndMousePosition = setCameraAndMousePosition;
 baseapp.getCameraAndMousePosition = getCameraAndMousePosition;
+
+baseapp.exportAsJSON = exportAsJSON;
+baseapp.importJSON = importJSON;
 
 window.baseapp = baseapp;

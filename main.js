@@ -82,7 +82,8 @@ io.sockets.on('connection', function(socket) {
                 roomIdClientCounter[roomId]++;
                 socket.emit('setHost', false);
 
-                // SEND CURRENT STATE TO CLIENT
+                io.in(roomId).emit('getCurrentState');
+                _log("join", roomId, "Requesting currentState from host.");
 
             }
 
@@ -97,6 +98,11 @@ io.sockets.on('connection', function(socket) {
             socket.disconnect(true);
         }
 
+    });
+
+    socket.on('uploadCurrentState', function(json) {
+        _log("uploadCurrentState", socket.roomId, "Deploying uploaded State.");
+        io.in(socket.roomId).emit('deployCurrentState', json);
     });
 
     socket.on('requestChange', function(req) {

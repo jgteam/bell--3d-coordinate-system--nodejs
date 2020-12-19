@@ -2,6 +2,8 @@ var socket = io.connect();
 
 var roomId = null;
 
+var waitingForCurrentState = true;
+
 function _log(event, roomid, msg) {
     if(msg == "")
         msg = "socket.on-event triggered";
@@ -30,11 +32,27 @@ socket.on('setHost', function(value){
     if(value == true){
         $("#connection-overview .userrole .value").text("Host");
         $("body").addClass("host");
+        waitingForCurrentState = false;
         baseapp.createNotification("info", "Du bist erfolgreich dem Raum beigetreten. Dir wurde die Rolle 'Host' zugeordnet, da Du der erste Nutzer in diesem Raum bist. Du kannst Deinen Namen oben in das Feld eintragen und dann über den Link oder die ID Leute einladen.");
     } else {
         $("#connection-overview .userrole .value").text("Guest");
         baseapp.createNotification("info", "Du bist erfolgreich dem Raum beigetreten. Dir wurde die Rolle 'Guest' zugeordnet. Du kannst Deinen Namen oben in das Feld eintragen und dann über den Link oder die ID Leute einladen.");
     }
+});
+
+socket.on('getCurrentState', function(){
+    _log("getCurrentState", roomId, "CurrentState was requested.");
+    if(baseapp.getClientIsHostingRoom() !== true) return;
+    _log("getCurrentState", roomId, "Uploading currentState as host.");
+    socket.emit('uploadCurrentState', baseapp.exportAsJSON());
+});
+
+socket.on('deployCurrentState', function(json){
+    _log("deployCurrentState", roomId, "Received currentState.");
+    if(!waitingForCurrentState) return;
+    _log("deployCurrentState", roomId, "Importing currentState.");
+    baseapp.importJSON(json, true);
+    waitingForCurrentState = false;
 });
 
 socket.on('updateUsercount', function(value){
