@@ -42,7 +42,7 @@ Bekannte Probleme:
 - Firefox: CSS3D-Elemente werden nicht korrekt dargestellt
 - Chrome und Chromium: CSS3D-Elemente verursachen manchmal Grafik-Glitches, welche auch die Darstellung der Browser-Elemente und der Entwicklertools beeinflussen
 
-**Weitere Hinweise:**
+## Weitere Hinweise:
 
 Aktuell ist noch keine Logik implementiert, welche die geöffneten Räume schließt. D.h. auch nach dem vollständigen Verlassen eines Raumes kann dieser nicht mehr benutzt werden, da die Host-Rolle nicht neu vergeben wird.
 
