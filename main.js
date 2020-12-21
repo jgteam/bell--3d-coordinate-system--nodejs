@@ -51,16 +51,6 @@ app.get('/api/getNewRoomId', function(req, res){
     res.json({roomId: roomId});
 });
 
-
-/*app.get('/api/:function/:parameter', function(req, res){
-    res.json(
-        {
-            function: req.params.function,
-            parameter: req.params.parameter
-        }
-    );
-});*/
-
 // Start Listening for Request
 http.listen(port, function(){
     console.log('Listening on port ' + port);
