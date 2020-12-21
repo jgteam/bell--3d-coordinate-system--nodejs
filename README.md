@@ -46,6 +46,8 @@ Bekannte Probleme:
 
 Aktuell ist noch keine Logik implementiert, welche die geöffneten Räume schließt. D.h. auch nach dem vollständigen Verlassen eines Raumes kann dieser nicht mehr benutzt werden, da die Host-Rolle nicht neu vergeben wird.
 
+Die Ordnerstruktur besitzt drei wichtige Ordner: *Base*, *Index* und *API*. *Base* beinhaltet den Kern des Frontends bzw. der Raum-Seite und *Index* die Index-Seite. Unter *API* findet man das stackspezifische Gegenstück für die Implementierung der Websockets, welches auf dem Frontend geladen werden kann. Diese Struktur entstand mit dem Hintergedanken diese Applikation auch in anderen Softwarestacks umzusetzen.
+
 ## WebSockets: Visueller Graph
 
 [(PDF) WebSockets-Graph](docs/websockets-graph.pdf)
