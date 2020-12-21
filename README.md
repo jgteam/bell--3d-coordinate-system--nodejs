@@ -2,6 +2,24 @@
 
 💡 Dieses Repo ist im Zusammenhang mit der [besonderen Lernleistung im Fach Informatik von Jannis Günsche](https://github.com/jgteam/bell--paper) entstanden.
 
+## Stack
+
+Es handelt sich hier um eine **MEN**-Stack Applikation.
+
+- M: MariaDB (MySQL, etc) *wurde aus Vereinfachung des Setups nicht benutzt*
+- E: Express (NPM-Module)
+- N: Nodejs
+
+Weitere Software, welche zum Einsatz kommt:
+
+- mysql (NPM-Module) *wurde aus Vereinfachung des Setups nicht benutzt*
+- nodemon (NPM-Module) *aktuell unbenutzt, wurde nur bei der Entwicklung verwendet*
+- socket.io (NPM-Module)
+- ThreeJS
+- ThreeJS: OrbitControls
+- ThreeJS: CSS3DRenderer & CSS3DObject
+- jQuery
+
 ## Installation
 ```
 npm install
