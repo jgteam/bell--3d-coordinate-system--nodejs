@@ -2,6 +2,24 @@
 
 💡 Dieses Repo ist im Zusammenhang mit der [besonderen Lernleistung im Fach Informatik von Jannis Günsche](https://github.com/jgteam/bell--paper) entstanden.
 
+## Stack
+
+Es handelt sich hier um eine **MEN**-Stack Applikation.
+
+- M: MariaDB (MySQL, etc) *wurde aus Vereinfachung des Setups nicht benutzt*
+- E: Express (NPM-Module)
+- N: Nodejs
+
+Weitere Software, welche zum Einsatz kommt:
+
+- mysql (NPM-Module) *wurde aus Vereinfachung des Setups nicht benutzt*
+- nodemon (NPM-Module) *aktuell unbenutzt, wurde nur bei der Entwicklung verwendet*
+- socket.io (NPM-Module)
+- ThreeJS
+- ThreeJS: OrbitControls
+- ThreeJS: CSS3DRenderer & CSS3DObject
+- jQuery
+
 ## Installation
 ```
 npm install
@@ -23,6 +41,12 @@ Diese Webapplikation wurde unter folgenden Bedingungen Entwickelt und ist somit 
 Bekannte Probleme:
 - Firefox: CSS3D-Elemente werden nicht korrekt dargestellt
 - Chrome und Chromium: CSS3D-Elemente verursachen manchmal Grafik-Glitches, welche auch die Darstellung der Browser-Elemente und der Entwicklertools beeinflussen
+
+## Weitere Hinweise
+
+Aktuell ist noch keine Logik implementiert, welche die geöffneten Räume schließt. D.h. auch nach dem vollständigen Verlassen eines Raumes kann dieser nicht mehr benutzt werden, da die Host-Rolle nicht neu vergeben wird.
+
+Die Ordnerstruktur besitzt drei wichtige Ordner: *Base*, *Index* und *API*. *Base* beinhaltet den Kern des Frontends bzw. der Raum-Seite und *Index* die Index-Seite. Unter *API* findet man das stackspezifische Gegenstück für die Implementierung der Websockets, welches auf dem Frontend geladen werden kann. Diese Struktur entstand mit dem Hintergedanken diese Applikation auch in anderen Softwarestacks umzusetzen.
 
 ## WebSockets: Visueller Graph
 
