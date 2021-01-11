@@ -1587,8 +1587,8 @@ function executeDeleteObject(objectClass, objectType) {
 
     $("#objectbox .object[linked_object='" + objectClass + "']").remove();
 
-    console.log(objectType);
-    console.log(objectClass);
+    //console.log(objectType);
+    //console.log(objectClass);
 
     if(objectType === "plane"){
 
@@ -1927,7 +1927,7 @@ function getClientIsHostingRoom() {
 }
 baseapp.getClientIsHostingRoom = getClientIsHostingRoom;
 
-function updateBroadcastCounter(type) {
+function increaseBroadcastCounter(type) {
     if(type == "point"){
         broadcastedPointCounter++;
     }else if(type == "pointConnection"){
@@ -1936,7 +1936,7 @@ function updateBroadcastCounter(type) {
         broadcastedPlaneCounter++;
     }
 }
-baseapp.updateBroadcastCounter = updateBroadcastCounter;
+baseapp.increaseBroadcastCounter = increaseBroadcastCounter;
 
 function setCounters(counters) {
     pointCounter = counters.points;
