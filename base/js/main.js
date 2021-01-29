@@ -82,15 +82,15 @@ var broadcastedPlaneCounter = 0;
 
 // Aktuelle Rotation des Koordinatensystem/Kameraposition
 // 0 = freie Rotation
-// 1 = XYZ-Achse (= welche beim Seitenaufruf in Verwendung ist)
-// 2 = XZ-Achse
-// 3 = YZ-Achse
-// 4 = XY-Achse
+// 1 = Sicht auf XYZ-Achse (= welche beim Seitenaufruf in Verwendung ist)
+// 2 = Sicht auf XZ-Achse
+// 3 = Sicht auf YZ-Achse
+// 4 = Sicht auf XY-Achse
 var rotationPosition = 1;
 
 // Legt die Farbauswahl für die Objekte im Koordinatensystem fest
 var domColors = [
-    /*"black",
+    /*"black", // alte Farbliste
     "red",
     "orange",
     "coral",
@@ -188,108 +188,18 @@ var customnameSizes = [
     "hidden"
 ];
 
+// Rolle des Clients (Standardmäßig true = Host)
 var clientIsHostingRoom = true;
+// Speicherung der roomId
 var roomId = null;
 
+// Speicherung der Mausposition, relativ zur Mitte un vh, für die Spiegelungsfunktion
 var currentMousePos = { x: "0vh", y: "0vh" };
 
 // Initialisation
 init();
 // Animation starten
 animate();
-
-
-
-
-// ### TEST BEGIN ###
-// kann ignoriert werden!
-
-//sandbox();
-function sandbox() {
-
-    /*
-
-        createPoint("red",3, 4, 1);
-
-        createPoint("red",1, 3, 4);
-
-        createPoint("blue",1, 6, 0);
-
-        createPlane(false,"red",
-            coordinatesToTHREEVector3(3, 4, 1),
-            coordinatesToTHREEVector3(1, 3, 4),
-            coordinatesToTHREEVector3(1, 6, 0)
-        );
-
-        createPointConnection(false,"pink",
-            coordinatesToTHREEVector3(3, 4, 1),
-            coordinatesToTHREEVector3(10, 30, 40)
-        );
-
-        createPoint("blue",1, 6, 40.5);
-    */
-
-
-
-    //createPoint("black",-10, -10, 10);
-    /*
-        createPoint("red",1, 3, 0);
-
-        createPoint("red",1, 3, 4);
-
-        createPoint("blue",1, 6, 0);
-
-        createPoint("blue",1, 6, 4);
-
-        createPoint("orange",5, 6, 0);
-
-        createPoint("orange",5, 6, 4);
-
-        createPoint("purple",5, 3, 0);
-        createPoint("purple",5, 3, 4);
-
-        createPoint("green",3, 4.5, 6);*/
-
-    /*createPointConnection("green", "connection_xy1", coordinatesToTHREEVector3(1, 3, 0), coordinatesToTHREEVector3(5, 6, 4));
-
-    createPointConnection("red", "connection_xy2",
-        coordinatesToTHREEVector3(1, 3, 0),
-        coordinatesToTHREEVector3(1, 3, 4)
-    );
-
-    createPointConnection("black", "connection_xy3",
-        coordinatesToTHREEVector3(-10, -10, -10),
-        coordinatesToTHREEVector3(10, 10, 10)
-    );*/
-
-
-    /*for(var a = -3; a <= 3; a++){
-        for(var b = -3; b <= 3; b++){
-            for(var c = -3; c <= 3;c++){
-
-                var d = 0.5;
-                createPoint("darkblue",a*d, b*d, c*d);
-
-            }
-        }
-    }*/
-
-
-}
-
-function logtest() {
-    console.log(camera);
-    console.log(camera.position);
-    //controls.reset();
-}
-//window.logtest = logtest;
-
-// ### TEST END ###
-
-
-
-
-
 
 // Initialisationsfunktion
 function init() {
@@ -616,7 +526,8 @@ function init() {
 
     $("#toolbox #button-mirror").on("click", toggleMirroring);
 
-    $("#notifications").on("mouseleave", function (){$(this).scrollTop(0)});
+    // Wenn die Maus die Benachrichtigungen verlässt
+    $("#notifications").on("mouseleave mouseout", function (){$(this).scrollTop(0)});
 
     // Eventlistener für die Tooltips
 
@@ -625,7 +536,7 @@ function init() {
     $(".gui-button[tooltip]").on("hover mouseover", showButtonTooltip);
 
     // Versteckt den Tooltip, wenn der Cursor den GUI-Button verlässt
-    $(".gui-button[tooltip]").on("mouseout", hideButtonTooltip);
+    $(".gui-button[tooltip]").on("mouseleave mouseout", hideButtonTooltip);
 
     // Füllt das Select-Element, für die Punkterstellung in der "Createpoint-Dialogbox", mit den oben bestimmten Farben.
     domColors.forEach(function (color){
@@ -640,6 +551,7 @@ function init() {
     $("#download").on("click", downloadExportBlob);
     $("#button-deleteAll").on("click", deleteAll);
 
+    // Speicherung der Mausposition, falls diese sich verändert
     // https://stackoverflow.com/a/4517215
     $(document).mousemove(function(event) {
 
@@ -679,6 +591,7 @@ function onControlsChange() {
     if($("#toolbox button#button-resetCamera:focus").length < 1)
         rotationPosition = 0;
 
+
     calculateAdditionalAxles();
 
 }
@@ -686,6 +599,7 @@ function onControlsChange() {
 
 function calculateAdditionalAxles() {
 
+    // Neuberechnung der zusätzlichen Achsenbeschriftungen
     calculateAdditionalAxle("x");
     calculateAdditionalAxle("y");
     calculateAdditionalAxle("z");
@@ -694,29 +608,43 @@ function calculateAdditionalAxles() {
 
 function calculateAdditionalAxle(axleLetter) {
 
+    // jQueryobjekt, der schon bestehenden Achsenbeschriftung
     var axle = $("." + axleLetter + "-axle-end-text");
+    // jQueryobjekt, der zusätzlichen Achsenbeschriftung
     var additionalAxle = $("#additional-axle-ends .additional-axle-ends." + axleLetter);
 
+    // Höhe der Toolbox
     var toolboxHeight = $("#toolbox").outerHeight() + 30;
 
+    // Dimension (Höhe/Breite) der zusätzlichen Achsenbeschriftung
     var additionalAxleEndDimension = additionalAxle.outerWidth();
+
+    // Viewportbreite und -höhe
     var screenWidth = $(window).width() - additionalAxleEndDimension;
     var screenHeight = $(window).height() - additionalAxleEndDimension - toolboxHeight;
 
+    // Position der Koordinatenmitte innerhalb des Viewports
     var positionCoordinateSystemCenter = $(".coordinateSystem-center").offset();
+    // Position der schon bestehenden Achsenbeschriftung innerhalb des Viewports
     var positionAxleEnd = axle.offset();
 
+    // Position der schon bestehenden Achsenbeschriftung anpassen, damit die Position auf die Mitte des Objekts ist
     positionAxleEnd.top += axle.outerHeight() / 2;
     positionAxleEnd.left += axle.outerWidth() / 2;
 
+    // Booleans, welche jeweils angeben, ob die Beschriftung auf einer Bildschirmseite den Viewport verlassen hat
     var overTopBorder = positionAxleEnd.top < 0;
     var belowBottomBorder = positionAxleEnd.top > screenHeight;
     var besidesLeftBorder = positionAxleEnd.left < 0;
     var besidesRightBorder = positionAxleEnd.left > screenWidth;
 
+    // Gibt an, ob die Beschriftung "hinter" einer Bildschirmecke ist
     var axleOnCorner = ((besidesLeftBorder || besidesRightBorder) && (overTopBorder || belowBottomBorder));
 
+    // Gibt an, ob die Beschriftung innerhalb des Viewports ist
     var isAxleOnScreen = !((besidesLeftBorder || besidesRightBorder) || (overTopBorder || belowBottomBorder));
+
+    // Gibt an, ob die Koordinatensystemmitte innerhalb des Viewports ist
     var isCoordinateSystemCenterOnScreen = (
         positionCoordinateSystemCenter.top >= 0
         && positionCoordinateSystemCenter.top <= screenHeight
@@ -724,60 +652,75 @@ function calculateAdditionalAxle(axleLetter) {
         && positionCoordinateSystemCenter.left <= screenWidth
     );
 
-    //check if coordinateSystem_center is onscreen
+    // Prüft, ob die Koordinatensystem Mitte sichtbar, aber die bestehende Beschriftung nicht sichtbar ist
     if (isCoordinateSystemCenterOnScreen && !isAxleOnScreen) {
 
+        // Zusätzliche Achsenbeschriftung sichtbar machen, falls diese noch nicht sichtbar ist
         additionalAxle.not(".visible").addClass("visible");
 
+        // Wenn die zusätzliche Beschriftung auf der rechten oder linken Bildschirmseite dargestellt werden muss
         if (besidesLeftBorder || besidesRightBorder) {
 
+            // Berechnung einer linearen Funktion (Abbildung der Achse im 2 dimensionalem Raum)
             // f(x) = ax+b
+            // f(0) / y-Achse wird der Bildschirmrand (rechts oder links) sein -> Somit wird der Achsenabschnitt
+            // die Position, an welcher die Achse den Viewport verlassen wird
+
             var steigung = ((positionCoordinateSystemCenter.top - positionAxleEnd.top) / (positionCoordinateSystemCenter.left - positionAxleEnd.left));
             var achsenabschnitt = (positionCoordinateSystemCenter.top - (positionCoordinateSystemCenter.left * steigung));
 
 
+            // Anpassung des Achsenabschnitts, falls es sich um den rechten Bildschirmrand handelt
             if(besidesRightBorder)
                 achsenabschnitt = steigung * screenWidth + achsenabschnitt;
 
+            // Achsenabschnitt anpassen, damit er nicht über den Bildschirmrand hinaus ragt
             if (achsenabschnitt < 0)
                 achsenabschnitt = 0;
-
             if (achsenabschnitt > screenHeight)
                 achsenabschnitt = screenHeight;
 
+            // Zusätzliche Achse positionieren
+
+            // y-Position
             additionalAxle.css({
                 // f(0)
                 "top": achsenabschnitt + "px"
             });
 
-            if(!axleOnCorner && besidesLeftBorder)
+            // x-Position
+            if(!axleOnCorner && besidesLeftBorder) // linke Bildschirmseite
                 additionalAxle.css({"left": "0px"});
-            if(!axleOnCorner && besidesRightBorder)
+            if(!axleOnCorner && besidesRightBorder) // rechte Bildschirmseite
                 additionalAxle.css({"left": screenWidth + "px"});
 
         }
 
+        // Wenn die zusätzliche Beschriftung an dem oberen oder unteren Bildschirmrand dargestellt werden muss
         if (overTopBorder || belowBottomBorder) {
 
             // f(x) = ax+b
+            // f(0) / y-Achse wird der Bildschirmrand (oben und unten) sein -> Somit wird der Achsenabschnitt
+            // die Position, an welcher die Achse den Viewport verlassen wird
+
             var steigung = ((positionCoordinateSystemCenter.left - positionAxleEnd.left) / (positionCoordinateSystemCenter.top - positionAxleEnd.top));
             var achsenabschnitt = (positionCoordinateSystemCenter.left - (positionCoordinateSystemCenter.top * steigung));
-
 
             if(belowBottomBorder)
                 achsenabschnitt = steigung * screenHeight + achsenabschnitt;
 
             if (achsenabschnitt < 0)
                 achsenabschnitt = 0;
-
             if (achsenabschnitt > screenWidth)
                 achsenabschnitt = screenWidth;
 
+            // x-Position
             additionalAxle.css({
                 // f(0)
                 "left": achsenabschnitt + "px"
             });
 
+            // y-Position
             if(!axleOnCorner && overTopBorder)
                 additionalAxle.css({"top": "0px"});
             if(!axleOnCorner && belowBottomBorder)
@@ -785,9 +728,10 @@ function calculateAdditionalAxle(axleLetter) {
 
         }
 
-
     } else {
 
+        // Zusätzliche Beschriftung unsichtbar machen, falls die bestehende Beschriftung sichtbar oder die
+        // Koordinatenmitte nicht mehr sichtbar ist
         additionalAxle.removeClass("visible");
 
     }
