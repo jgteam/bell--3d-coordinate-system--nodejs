@@ -1083,12 +1083,9 @@ function createPoint(
 
     // Prüft ob es sich bei einer Koordinate um die neue "maxXYZValue" handelt,
     // und setzt den neuen Wert als Maximum fall nötig
-    if(Math.abs(x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(x));
-    if(Math.abs(y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(y));
-    if(Math.abs(z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(z));
+    testForNewMaxValue(x);
+    testForNewMaxValue(y);
+    testForNewMaxValue(z);
 
     return point_element.element;
 
@@ -1138,21 +1135,13 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
 
     // Prüft ob es sich bei einer Koordinate um die neue "maxXYZValue" handelt,
     // und setzt den neuen Wert als Maximum fall nötig
-    if(Math.abs(position_a_coordinates.x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.x));
-    if(Math.abs(position_a_coordinates.y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.y));
-    if(Math.abs(position_a_coordinates.z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.z));
+    testForNewMaxValue(position_a_coordinates.x);
+    testForNewMaxValue(position_a_coordinates.y);
+    testForNewMaxValue(position_a_coordinates.z);
 
-    // Prüft ob es sich bei einer Koordinate um die neue "maxXYZValue" handelt,
-    // und setzt den neuen Wert als Maximum fall nötig
-    if(Math.abs(position_b_coordinates.x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.x));
-    if(Math.abs(position_b_coordinates.y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.y));
-    if(Math.abs(position_b_coordinates.z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.z));
+    testForNewMaxValue(position_b_coordinates.x);
+    testForNewMaxValue(position_b_coordinates.y);
+    testForNewMaxValue(position_b_coordinates.z);
 
     var connection_element = createCSS3DElement(
         {
@@ -1262,7 +1251,6 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
 
     addObjectBoxEntry(name, name.replace("plane", "Ebene Nr. "), "plane");
 
-
     //var plane_element_class = "object-plane-" + name;
 
     var mesh = new THREE.Mesh(plane, new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide}));
@@ -1276,28 +1264,17 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
 
     // Prüft ob es sich bei einer Koordinate um die neue "maxXYZValue" handelt,
     // und setzt den neuen Wert als Maximum fall nötig
-    if(Math.abs(position_a_coordinates.x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.x));
-    if(Math.abs(position_a_coordinates.y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.y));
-    if(Math.abs(position_a_coordinates.z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_a_coordinates.z));
+    testForNewMaxValue(position_a_coordinates.x);
+    testForNewMaxValue(position_a_coordinates.y);
+    testForNewMaxValue(position_a_coordinates.z);
 
-    if(Math.abs(position_b_coordinates.x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.x));
-    if(Math.abs(position_b_coordinates.y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.y));
-    if(Math.abs(position_b_coordinates.z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_b_coordinates.z));
+    testForNewMaxValue(position_b_coordinates.x);
+    testForNewMaxValue(position_b_coordinates.y);
+    testForNewMaxValue(position_b_coordinates.z);
 
-    if(Math.abs(position_c_coordinates.x) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_c_coordinates.x));
-    if(Math.abs(position_c_coordinates.y) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_c_coordinates.y));
-    if(Math.abs(position_c_coordinates.z) > maxXYZValue)
-        setNewMaxXYZValue(Math.abs(position_c_coordinates.z));
-
-
+    testForNewMaxValue(position_c_coordinates.x);
+    testForNewMaxValue(position_c_coordinates.y);
+    testForNewMaxValue(position_c_coordinates.z);
 
     //"center"-point:
     /*if(!fromimport && clientIsHostingRoom){
@@ -1840,6 +1817,12 @@ function importJSON(jsonString, fromsocket = false) {
 
     });
 
+}
+
+function testForNewMaxValue(value) {
+    value = Math.abs(value);
+    if(value > maxXYZValue)
+        setNewMaxXYZValue(value);
 }
 
 function createNotification(type, text) {
