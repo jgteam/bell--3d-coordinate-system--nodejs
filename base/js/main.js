@@ -1035,6 +1035,7 @@ function createPoint(
     var point_element_class = "object-point-" + name;
 
 
+    // Falls es nicht von einem Socket-Event kommt, dann wird eine Anfrage geschickt und der Counter wieder zurückgesetzt
     if (/*!clientIsHostingRoom && */!fromsocket) {
         pointCounter--;
         createChangeRequest(
@@ -1055,6 +1056,7 @@ function createPoint(
 
         return;
     }
+    //... falls es doch von einem Socket-Event kommt: ...
 
 
 
@@ -1091,9 +1093,8 @@ function createPoint(
 
 }
 
-
-// "fromimport" bestimmt, ob dieses Objekt durch einen Importvorgang erstellt werden soll, was dazu führt,
-// dass kein "center-point" erzeugt wird.
+// "fromimport" wird nicht (mehr) genutzt und kann ignoriert werden.
+// Positionen werden als Vector3 übergeben
 function createPointConnection(fromsocket, fromimport, color, position_a, position_b) {
 
     var number = pointConnectionCounter++;
@@ -1143,6 +1144,7 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
     testForNewMaxValue(position_b_coordinates.y);
     testForNewMaxValue(position_b_coordinates.z);
 
+    // Erstellt das CSS3D-Element (Part 1)
     var connection_element = createCSS3DElement(
         {
             "width": length + "px",
@@ -1157,6 +1159,7 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
         false
     );
 
+    // Strecke ausrichten
     // https://stackoverflow.com/a/43281625
     connection_element.lookAt(position_b);
     connection_element.rotateY( - Math.PI / 2 );
@@ -1165,8 +1168,19 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
         (position_a.y + position_b.y) / 2,
         (position_a.z + position_b.z) / 2
     ));
-    $(connection_element.element).on("click touchstart touchend", selectObject).attr("number", number).attr("start_x", position_a_coordinates.x).attr("start_y", position_a_coordinates.y).attr("start_z", position_a_coordinates.z).attr("end_x", position_b_coordinates.x).attr("end_y", position_b_coordinates.y).attr("end_z", position_b_coordinates.z);
 
+    // Eventlistener und Attribute setzen
+    $(connection_element.element)
+        .on("click touchstart touchend", selectObject)
+        .attr("number", number)
+        .attr("start_x", position_a_coordinates.x)
+        .attr("start_y", position_a_coordinates.y)
+        .attr("start_z", position_a_coordinates.z)
+        .attr("end_x", position_b_coordinates.x)
+        .attr("end_y", position_b_coordinates.y)
+        .attr("end_z", position_b_coordinates.z);
+
+    // Erstellt das CSS3D-Element (Part 2)
     connection_element = createCSS3DElement(
         {
             "width": length + "px",
@@ -1181,7 +1195,7 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
         false
     );
 
-
+    // Strecke ausrichten
     // https://stackoverflow.com/a/43281625
     connection_element.lookAt(position_b);
     connection_element.rotateY( - Math.PI / 2 );
@@ -1191,9 +1205,21 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
         (position_a.y + position_b.y) / 2,
         (position_a.z + position_b.z) / 2
     ));
-    $(connection_element.element).on("click touchstart touchend", selectObject).attr("number", number).attr("start_x", position_a_coordinates.x).attr("start_y", position_a_coordinates.y).attr("start_z", position_a_coordinates.z).attr("end_x", position_b_coordinates.x).attr("end_y", position_b_coordinates.y).attr("end_z", position_b_coordinates.z)
+
+    // Eventlistener und Attribute setzen
+    $(connection_element.element)
+        .on("click touchstart touchend", selectObject)
+        .attr("number", number)
+        .attr("start_x", position_a_coordinates.x)
+        .attr("start_y", position_a_coordinates.y)
+        .attr("start_z", position_a_coordinates.z)
+        .attr("end_x", position_b_coordinates.x)
+        .attr("end_y", position_b_coordinates.y)
+        .attr("end_z", position_b_coordinates.z)
         .attr("second-perspective", true);
 
+
+    // Object-Box-Eintrag erstellen
     addObjectBoxEntry(pointConnection_element_class, name.replace("pointConnection", "Strecke Nr."), "pointConnection");
 
     //center-point:
@@ -1211,6 +1237,7 @@ function createPointConnection(fromsocket, fromimport, color, position_a, positi
 
 function createPlane(fromsocket, fromimport, color, position_a, position_b, position_c) {
 
+    // Ebenengeometrie erstellen
     var plane = new THREE.Geometry();
     plane.vertices = [position_a, position_b, position_c];
     plane.faces = [new THREE.Face3(0, 1,2)];
@@ -1249,10 +1276,12 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
         return;
     }
 
+    // Object-Box-Eintrag erstellen
     addObjectBoxEntry(name, name.replace("plane", "Ebene Nr. "), "plane");
 
     //var plane_element_class = "object-plane-" + name;
 
+    // Ebenenmesh erstellen
     var mesh = new THREE.Mesh(plane, new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide}));
     mesh.name = name;
     mesh._number = number;
@@ -1260,6 +1289,8 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
     mesh._position_a = position_a_coordinates;
     mesh._position_b = position_b_coordinates;
     mesh._position_c = position_c_coordinates;
+
+    // Mesh zur Szene hinzufügen
     scene_webGL.add(mesh);
 
     // Prüft ob es sich bei einer Koordinate um die neue "maxXYZValue" handelt,
@@ -1289,10 +1320,13 @@ function createPlane(fromsocket, fromimport, color, position_a, position_b, posi
 
 }
 
+// Erstellt einen Eintrag in der Objekt-Box. Über diesen Eintrag können Elemente gelöscht werden, aber auch ausgewählt und benannt falls verfügbar.
 function addObjectBoxEntry(objectClass, objectName, objectType) {
 
-
+    // HTML-Div-Element erstellen
     var objectBoxEntry_element = document.createElement( 'div' );
+
+    // HTML-Div-Element Attribute, Text und Eventlistener hinzufügen
     $(objectBoxEntry_element).addClass("object gui-button")
         .attr("linked_object", objectClass)
         .attr("linked_object_type", objectType)
@@ -1305,17 +1339,21 @@ function addObjectBoxEntry(objectClass, objectName, objectType) {
         .find(".deleteElementButton")
         .on("click", deleteObject);
 
+    // Element zur Objekt-Box hinzufügen
     $("#objectbox .wrapper").append(objectBoxEntry_element)
 
 }
 
 // ### Funktionen für Objekt-Auswahl
 
+// Wird über Click-Events aufgerufen. Benutzt $(this) und $(...).find(".selected") um auf die auszuwählende und schon ausgewählten Elemente zuzugreifen
 function selectObject() {
 
-
+    // Falls im "createPlane"-Modus && Falls schon zwei Elemente ausgewählt sind
     if($("#renderer").hasClass("createPlane") && $("#renderer").find(".object.point.selected").length == 2){
+        // Erstellt eine Ebene, aufgrund der drei ausgewählten Elemente (Punkte)
 
+        // Ersten beide Punkte auslesen
         var x1 = null;
         var y1 = null;
         var z1 = null;
@@ -1329,7 +1367,7 @@ function selectObject() {
         first_two_point.each(function() {
 
             if(x1 === null) {
-                x1 = $(this).attr("x");
+                x1 = $(this).attr("x"); // Koordinate auslesen...
                 y1 = $(this).attr("y");
                 z1 = $(this).attr("z");
             } else {
@@ -1340,79 +1378,103 @@ function selectObject() {
 
         })
 
-
+        // Zwei schon ausgewählten Punkte: Auswahl aufheben
         $("#renderer > div > .selected").removeClass("selected");
+        // Dritter Punkt, welcher diesen Funktionsaufruf ausgelöst hat, auswählen
         $($(this).parent().find(".object." + $(this).attr("class").split(" ").pop())).addClass("selected");
 
-        var second_point = $("#renderer").find(".object.point.selected");
+        // Dritten Punkt auslesen
+        var third_point = $("#renderer").find(".object.point.selected");
 
-        var x3 = second_point.attr("x");
-        var y3 = second_point.attr("y");
-        var z3 = second_point.attr("z");
+        var x3 = third_point.attr("x");
+        var y3 = third_point.attr("y");
+        var z3 = third_point.attr("z");
 
+        // createPlane aufrufen
         createPlane(false, false, $("#color").val().toLowerCase(),
             coordinatesToTHREEVector3(x1, y1, z1),
             coordinatesToTHREEVector3(x2, y2, z2),
             coordinatesToTHREEVector3(x3, y3, z3)
         );
 
+        // Modus wieder auf "createPlane"-Modus setzen
         buttonCreatePlane();
-        return;
+        return; // Methode beenden
 
     }
 
 
-
-
+    // Falls im "createPointConnection"-Modus && Falls schon ein Element ausgewählt ist (!= 0)
     if($("#renderer").hasClass("createPointConnection") && $("#renderer").find(".object.point.selected").length != 0){
 
+        // Ersten Ounkt auslesen
         var first_point = $("#renderer").find(".object.point.selected");
 
         var x1 = first_point.attr("x");
         var y1 = first_point.attr("y");
         var z1 = first_point.attr("z");
 
+        // Auswahlt aufheben
         $("#renderer > div > .selected").removeClass("selected");
+
+        // Zweiten Punkt auswählen
         $($(this).parent().find(".object." + $(this).attr("class").split(" ").pop())).addClass("selected");
 
+        //Zweiten Punkt auslesen
         var second_point = $("#renderer").find(".object.point.selected");
 
         var x2 = second_point.attr("x");
         var y2 = second_point.attr("y");
         var z2 = second_point.attr("z");
 
+        // createPointConnection aufrufen
         createPointConnection(false, false, $("#color").val().toLowerCase(),
             coordinatesToTHREEVector3(x1, y1, z1),
             coordinatesToTHREEVector3(x2, y2, z2)
         );
 
+        // Wieder auf den "createPointConnection"-Modus setzen
         buttonCreatePointConnection();
-        return;
+        return; // Methode beenden
 
     }
 
+    // Falls keine Ebene oder Strecke erstellt wird, dann...
+
+    // Klasse des auszuwählendes Elementes
     var object_class = $(this).attr("class").split(" ").pop();
 
+    // Wenn nicht im createPlane-Modus,...
     if(!$("#renderer").hasClass("createPlane"))
-        $("#renderer > div > .selected").removeClass("selected");
+        $("#renderer > div > .selected").removeClass("selected");// ... Auswahl aufheben
+
+    // Auszuwählendes Element auswählen
     $($(this).parent().find(".object." + object_class)).addClass("selected");
 
+    // Wenn nicht im createPlane-Modus,...
     if(!$("#renderer").hasClass("createPlane"))
-        $("#objectbox .selected").removeClass("selected");
+        $("#objectbox .selected").removeClass("selected");// ... Auswahl aufheben (in der Objekt-Box)
+
+    // Auszuwählendes Element auswählen (in der Objekt-Box)
     $("#objectbox .object[linked_object='" + object_class + "']").addClass("selected");
+    // Zum Element Scrollen
     $("#objectbox .object-wrapper").scrollTop(0).scrollTop($("#objectbox .object.selected").offset().top - $("#objectbox").offset().top - 52);
 
+    // Falls im "selectCameraTarget"-Modus,...
     if($("#renderer").hasClass("selectCameraTarget")) {
 
+        // ... Kamera nach Punkt ausrichten
         var selectedPoint = $("#renderer").find(".object.point.selected");
 
         controls.target = coordinatesToTHREEVector3(selectedPoint.attr("x"), selectedPoint.attr("y"), selectedPoint.attr("z"));
         controls.update();
 
-        setRendererUserMode("move");
-        return;
+        setRendererUserMode("move"); // Modus zurücksetzen
+        return; // Methode beenden
 
     }
+
+    // Infotext je nach Objekttyp anzeigen...
 
     var selectedObject = $("#renderer").find(".object.selected");
 
@@ -1428,18 +1490,23 @@ function selectObject() {
 
 }
 
+// Wird über Click-Events aufgerufen. (über die Objektbox)
 function selectObjectByObjectBox() {
 
     if($(this).hasClass("selected"))
-        return;
+        return; // Methode beenden, falls dieses Objekt schon ausgewählt ist
 
+    // Klasse und Typ auslesen
     var object_class = $(this).attr("linked_object");
     var object_type = $(this).attr("linked_object_type");
+
+    // Auswahlmodus setzen
     if(object_type == "point" && rendererUserMode != "selectPoint")
         setRendererUserMode("selectPoint");
     if(object_type == "pointConnection" && rendererUserMode != "selectPointConnection")
         setRendererUserMode("selectPointConnection");
 
+    // Klick-Event triggern
     $("#renderer > div > ." + object_class).each(function (){
         $(this).not(".selected").click();
     });
@@ -1448,6 +1515,7 @@ function selectObjectByObjectBox() {
 
 // ### GUI-Button Funktionen
 
+// CreatePoint-Button setzt Modi
 function buttonCreatePoint() {
 
     setRendererUserMode("move");
@@ -1455,18 +1523,22 @@ function buttonCreatePoint() {
 
 }
 
+// Erstellt Punkt, nachdem der Plus-Button gedrückt wurde
 function buttonSubmitCreatePoint() {
 
     var createPointDialog = $("#createpoint-dialogbox");
 
+    // Koordinaten aus dem Formular auslesen
     var x_value = (createPointDialog.find("#x-value").val() !== "") ? createPointDialog.find("#x-value").val() : 0;
     var y_value = (createPointDialog.find("#y-value").val() !== "") ? createPointDialog.find("#y-value").val() : 0;
     var z_value = (createPointDialog.find("#z-value").val() !== "") ? createPointDialog.find("#z-value").val() : 0;
 
+    // createPoint-Methode aufrufen
     createPoint(false, $("#color").val().toLowerCase(), x_value, y_value, z_value);
 
 }
 
+// CreatePointConnection-Button setzt Modi
 function buttonCreatePointConnection() {
 
     setRendererUserMode("selectPoint");
@@ -1474,6 +1546,7 @@ function buttonCreatePointConnection() {
 
 }
 
+// CreatePlane-Button setzt Modi
 function buttonCreatePlane() {
 
     setRendererUserMode("selectPoint");
@@ -1481,15 +1554,19 @@ function buttonCreatePlane() {
 
 }
 
-// deletes selected Object... creates request to delete clicked object
+// Löscht ein Element über die Objektbox
 function deleteObject() {
 
+    // Auswahlmodus zurücksetzen
     setRendererUserMode("move");
 
+    // Zu löschendes Element in der Objektbox
     var objectBoxObjectEntry = $(this).closest(".object");
+    // Klasse und Typ auslesen
     var objectClass = objectBoxObjectEntry.attr("linked_object");
     var objectType = objectBoxObjectEntry.attr("linked_object_type");
 
+    // Anfrage zur löschung erstellen
     createChangeRequest(
         {
             action: "delete",
@@ -1504,13 +1581,16 @@ function deleteObject() {
 
 }
 
+// Führt eine Löschung aus
 function executeDeleteObject(objectClass, objectType) {
 
+    // Element aus der Objektbox löschen
     $("#objectbox .object[linked_object='" + objectClass + "']").remove();
 
     //console.log(objectType);
     //console.log(objectClass);
 
+    // Je nach Typ, die Ebene oder den Punkt/die Strecke aus der jeweiligen Szene löschen
     if(objectType === "plane"){
 
         scene_webGL.remove(scene_webGL.getObjectByName(objectClass));
@@ -1518,10 +1598,10 @@ function executeDeleteObject(objectClass, objectType) {
 
     } else {
 
-        // each, wegen den strecken, müssen zwei mal gelöscht werden
+        // each: Weil die Strecken aus zwei DOM-Elementen besteht
         $("#renderer > div > .object." + objectClass).each(function () {
 
-            console.log($(this));
+            //console.log($(this));
 
             scene.remove(scene.getObjectByName($(this).removeClass("selected").attr("class")));
 
@@ -1529,25 +1609,31 @@ function executeDeleteObject(objectClass, objectType) {
 
     }
 
+    // Neues Maximum berechnen
     getNewMaxXYZValue();
 
 }
 
 function setNameByObjectBox() {
 
+    // Zu benennendes Objekt
     var object = $("." + $(this).closest(".object").attr("linked_object").replace(" ", "."));
 
     if(object.attr("customname")) {
+        // Falls es schon einen Namen hat -> Namen entfernen
         object.attr("customname", "");
     } else {
+        // Falls es keinen Namen hat -> Eingabefeld öffnen
         var name = prompt('Name für den Punkt:');
 
+        // Name setzen
         if(name != null)
             object.attr("customname", name + " (" + object.attr("x") + "|" + object.attr("y")  + "|" + object.attr("z")  + ")");
     }
 
 }
 
+// Löscht alle Elemente, indem für jeden Objektbox-Eintrag das Klick-Event des Löschbuttons ausgelöst wird.
 function deleteAll() {
 
     $("#objectbox .wrapper div.object").each(function (){
@@ -1556,6 +1642,7 @@ function deleteAll() {
 
 }
 
+// Wechselt zischen verschiedenen Größen der Benennungen
 function buttonToggleCustomnameSize() {
 
     switch (customnameSize){
@@ -1577,8 +1664,10 @@ function buttonToggleCustomnameSize() {
 
 }
 
+// Setzt den Kamerawinkel/die Rotation zurück und wechselt zischen verschiedenen Ansichten, falls mehrmals aufgerufen
 function buttonResetRotation() {
 
+    // Koordinatenursprung fokussieren
     controls.target = coordinatesToTHREEVector3(0, 0, 0);
 
     rotationPosition++;
@@ -1605,10 +1694,12 @@ function buttonResetRotation() {
 
     controls.update();
 
+    // Vorerst die zusätzlichen Achsenbeschriftungen verstecken
     $("#additional-axle-ends div").removeClass("visible");
 
 }
 
+// SelectCameraTarget-Button setzt Modi
 function buttonSelectCameraTarget() {
 
     setRendererUserMode("selectPoint");
@@ -1616,6 +1707,7 @@ function buttonSelectCameraTarget() {
 
 }
 
+// Fokussiert wieder den Koordinatenursprung
 function buttonResetCameraTarget() {
 
     controls.target = coordinatesToTHREEVector3(0, 0, 0);
@@ -1623,6 +1715,7 @@ function buttonResetCameraTarget() {
 
 }
 
+// Gibt Kamera- und Mausposition zurück
 function getCameraAndMousePosition() {
 
     return {
@@ -1634,28 +1727,34 @@ function getCameraAndMousePosition() {
 
 }
 
+// Setzt Kamera- und Mausposition
 function setCameraAndMousePosition(cameraAndMousePosition) {
 
     controls.target = new THREE.Vector3( cameraAndMousePosition.target.x, cameraAndMousePosition.target.y, cameraAndMousePosition.target.z);
     camera.position.copy(cameraAndMousePosition.position);
     camera.zoom = cameraAndMousePosition.zoom;
+
     $("#mirrored-cursor").css({"transform": "translate(" + cameraAndMousePosition.mouse.x + ", " + cameraAndMousePosition.mouse.y + ")"});
 
     camera.updateProjectionMatrix();
     controls.update();
 
+    // Achsen neu berechnen
     calculateAdditionalAxles();
 
 }
 
+// Aktiviert und deaktiviert das Spiegeln
 function toggleMirroring() {
 
     if(!$("#toolbox #button-mirror").hasClass("active")) {
+        // Falls nicht aktiv... Spiegeln aktivieren
         startMirroring();
         $("#toolbox #button-mirror").addClass("active");
         createNotification("info", "Spiegelung gestartet.");
         socket.emit('pushMirroringState', true);
     } else {
+        // Falls aktiv... Spiegeln deaktivieren
         stopMirroring();
         $("#toolbox #button-mirror").removeClass("active");
         createNotification("info", "Spiegelung gestoppt.");
@@ -1665,6 +1764,7 @@ function toggleMirroring() {
 
 }
 
+// Wechselt zwischen Objektbox-Größen
 function buttonToggleObjectBoxSize() {
 
     if($("#objectbox").hasClass("small")) {
@@ -1673,18 +1773,21 @@ function buttonToggleObjectBoxSize() {
         $("#objectbox").addClass("small");
     }
 
-
 }
 
 // ### Funktionen für Import/Export
 
+// Gitb den aktuellen Stand als JSON zurück
 function exportAsJSON() {
 
+    // Array an allen Objekten
     var objectArray = [];
 
+    // For each object (Alle Punkte und Strecken)
     $("#renderer > div > .object").each(function () {
 
         if($(this).hasClass("point")){
+            // Falls es ein Punkt ist
 
             var object = {
                 type: "point",
@@ -1702,6 +1805,7 @@ function exportAsJSON() {
             objectArray.push(object);
 
         }else if($(this).hasClass("pointConnection") && $(this).attr("second-perspective") === undefined){
+            // Falls es eine Strecke ist
 
             var object = {
                 type: "pointConnection",
@@ -1723,6 +1827,8 @@ function exportAsJSON() {
         }
 
     });
+
+    // Jetzt ale Ebenen
 
     // https://stackoverflow.com/a/53127989
     scene_webGL.traverse(function(plane) {
@@ -1752,26 +1858,31 @@ function exportAsJSON() {
     });
 
 
-    var JSObject = {objects: objectArray};
+    var JSObject = {objects: objectArray}; // Javascript-Objekt erzeugen
 
     // https://www.tutorialrepublic.com/faq/how-to-convert-js-object-to-json-string.php
-    return JSON.stringify(JSObject);
+    return JSON.stringify(JSObject); // In JSON umwandeln und zurückgeben
 
 }
 
+// Started Dateidownload (Export)
 function downloadExportBlob() {
+
+    // Datei mit Inhalt erstellen
 
     // https://shinglyu.com/web/2019/02/09/js_download_as_file.html
     // https://stackoverflow.com/a/19328891
     var data = new Blob([exportAsJSON()], {type: 'text/plain'});
 
+    // Hidden-Link erzeugen und Klick-Event triggern
     var exportUrl = window.URL.createObjectURL(data);
     $("#hidden_export_link").attr("href", exportUrl);
     document.getElementById("hidden_export_link").click();
-    window.URL.revokeObjectURL(exportUrl);
+    window.URL.revokeObjectURL(exportUrl); // Download-URL wieder auflösen
 
 }
 
+// Importvorgang einer Datei starten
 // https://stackoverflow.com/a/26298948
 function importFile(e) {
     var file = e.target.files[0];
@@ -1782,31 +1893,42 @@ function importFile(e) {
     var reader = new FileReader();
     reader.onload = function(e) {
         var contents = e.target.result;
-        importJSON(contents);
+        importJSON(contents); // Importiert den Dateiinhalt
     };
     reader.readAsText(file);
 }
 
+// Importiert JSON
 function importJSON(jsonString, fromsocket = false) {
 
+    // in ein Objektarray verwandeln
     var JSObject = JSON.parse(jsonString);
     var objectArray = JSObject.objects;
 
+    // für jeder Objekt im Array
     objectArray.forEach(function (object){
 
         if(object.type == "point"){
+            // Falls Punkt...
 
+            // createPoint-Methode aufrufen
             var point = createPoint(fromsocket, object.properties.color, object.properties.x, object.properties.y, object.properties.z);
+
+            // Punkt benennen, falls Name vorhanden
             if(object.properties.customname !== "" && object.properties.customname != null){
                 $(point).attr("customname", object.properties.customname);
             }
 
         }else if(object.type == "pointConnection"){
+            // Falls Strecke
 
+            // createPointConnection-Methode aufrufen
             createPointConnection(fromsocket, true, object.properties.color, coordinatesToTHREEVector3(object.properties.start_x, object.properties.start_y, object.properties.start_z), coordinatesToTHREEVector3(object.properties.end_x, object.properties.end_y, object.properties.end_z));
 
         }else if(object.type == "plane"){
+            // Falls Ebene
 
+            // createPlane-Methode aufrufen
             createPlane(fromsocket,true, object.properties.color,
                 coordinatesToTHREEVector3(object.properties.position_a_x, object.properties.position_a_y, object.properties.position_a_z),
                 coordinatesToTHREEVector3(object.properties.position_b_x, object.properties.position_b_y, object.properties.position_b_z),
@@ -1819,18 +1941,20 @@ function importJSON(jsonString, fromsocket = false) {
 
 }
 
+
+// Testet, ob der übergebene Wert das neue Maximum ist
 function testForNewMaxValue(value) {
     value = Math.abs(value);
     if(value > maxXYZValue)
         setNewMaxXYZValue(value);
 }
 
+// Erstellt eine Benachrichtigung
 function createNotification(type, text) {
-
     $('#notifications').prepend("<div class='notification " + type + "'>" + text + "</div>");
-
 }
 
+// baseapp-Javascript-Objekt: Ermöglicht späteren Zugriff auf diverse Funktionen aus der api/socket-client.js-Javascript Datei
 var baseapp = {};
 
 baseapp.createNotification = createNotification;
@@ -1854,6 +1978,7 @@ function getClientIsHostingRoom() {
 }
 baseapp.getClientIsHostingRoom = getClientIsHostingRoom;
 
+// Zählt den Zähler des übergebenen Types um 1 hoch
 function increaseBroadcastCounter(type) {
     if(type == "point"){
         broadcastedPointCounter++;
@@ -1865,6 +1990,7 @@ function increaseBroadcastCounter(type) {
 }
 baseapp.increaseBroadcastCounter = increaseBroadcastCounter;
 
+// Setzt die Zähler auf den übergebenen Wert
 function setCounters(counters) {
     pointCounter = counters.points;
     pointConnectionCounter = counters.pointConnections;
@@ -1872,6 +1998,7 @@ function setCounters(counters) {
 }
 baseapp.setCounters = setCounters;
 
+// Gibt die Zähler in einem JS-Objekt zurück
 function getCounters() {
     return {points: broadcastedPointCounter, pointConnections: broadcastedPointConnectionCounter, planes: broadcastedPlaneCounter};
 }
@@ -1890,4 +2017,5 @@ baseapp.setRendererUserMode = setRendererUserMode;
 baseapp.exportAsJSON = exportAsJSON;
 baseapp.importJSON = importJSON;
 
+// baseapp "exportieren"
 window.baseapp = baseapp;
