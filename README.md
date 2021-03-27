@@ -1,4 +1,4 @@
-# 3D Koordinatensystem (Stack: Node)
+# 3D Koordinatensystem (Stack: Node.js)
 
 💡 Dieses Repo ist im Zusammenhang mit der [besonderen Lernleistung im Fach Informatik von Jannis Günsche](https://github.com/jgteam/bell--paper) entstanden.
 
