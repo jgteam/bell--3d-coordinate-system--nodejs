@@ -2,6 +2,9 @@
 
 💡 Dieses Repo ist im Zusammenhang mit der [besonderen Lernleistung im Fach Informatik von Jannis Günsche](https://github.com/jgteam/bell--paper) entstanden.
 
+**Zu den Screenshots:**
+[Alle Screenshots in der Übersicht](docs/screenshots/overview.md)
+
 ## Stack
 
 Es handelt sich hier um eine **MEN**-Stack Applikation.
