@@ -35,11 +35,11 @@ npm start
 ``````
 
 ## Kompatibilitätshinweis
-Diese Webapplikation wurde unter folgenden Bedingungen Entwickelt und ist somit automatisch dafür optimiert:
+Diese Webapplikation wurde unter folgenden Bedingungen entwickelt und ist somit automatisch dafür optimiert:
 - Opera Browser
 - Viewport von 2520x1309px
 
-💡 Die Performance der 3D-Darstellung kann nach Hardware und Performance-Modus abweichen. Unausreichene Rechenleistung kann dazu führen, dass der *THREE WebGLRenderer* und/oder der *CSS3DRenderer* während der Benutzung abstürzen kann.
+💡 Die Performance der 3D-Darstellung kann nach Hardware und Performance-Modus abweichen. Nicht ausreichende Rechenleistung kann dazu führen, dass der *THREE WebGLRenderer* und/oder der *CSS3DRenderer* während der Benutzung abstürzen kann.
 
 Bekannte Probleme:
 - Firefox: CSS3D-Elemente werden nicht korrekt dargestellt
